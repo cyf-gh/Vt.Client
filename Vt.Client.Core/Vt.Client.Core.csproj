@@ -65,8 +65,10 @@
     <Compile Include="Core.cs" />
     <Compile Include="DriverHelper.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="NetSync.cs" />
+    <Compile Include="Net.cs" />
+    <Compile Include="NetWorkers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtocolCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NLog.config" />

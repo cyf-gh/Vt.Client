@@ -18,10 +18,6 @@ namespace Vt.Client.App {
             InitializeComponent();
         }
 
-        public string GetPackageMsg( string name, string currentLocation )
-        {
-            return string.Format( "{0},{1},{2}", name, currentLocation, DateTime.Now );
-        }
 
         private void MainFrame_Load( Object sender, EventArgs e )
         {
@@ -66,23 +62,18 @@ namespace Vt.Client.App {
             catch( Exception ex ) {
                 VtLogger.A.Error( ex.ToString() );
             }
-            synccer = new Synccer();
-            TaskFactory taskFactory = new TaskFactory();
-            Task send = taskFactory.StartNew(SendLocationPermantly);
+
         }
-        Synccer synccer = null;
-        public void SendLocationPermantly()
-        {
-            while( true ) {
-                synccer.SendMessage( GetPackageMsg( tb_nick_name.Text, browserContoller.GetCurrentLocationText() ) );
-                Console.WriteLine( synccer.RecievMessage() );
-                Thread.Sleep( 300 );
-            }
-        }
+
 
         private void MainFrame_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            browserContoller.Close();
+            browserContoller?.Close();
+        }
+
+        private void serverConfigToolStripMenuItem_Click(Object sender, EventArgs e)
+        {
+
         }
     }
 }
