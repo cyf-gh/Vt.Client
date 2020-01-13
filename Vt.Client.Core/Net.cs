@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Vt.Client.Core.Log;
 
@@ -36,9 +37,10 @@ namespace Vt.Client.Core.Net {
     }
 
     public class TcpClient_ {
-        static public async void SendMessage_ShortConnect( string msg, string ip, string tcpPort )
+        static public string SendMessage_ShortConnect( string msg, string ip, string tcpPort )
         {
             TcpClient tcpClient = new TcpClient();
+            string Resp = "";
             try {
                 tcpClient.Connect( IPAddress.Parse( ip ), Convert.ToInt32( tcpPort ) );
             } catch ( Exception ex ) {
@@ -48,13 +50,22 @@ namespace Vt.Client.Core.Net {
             NetworkStream ntwStream = tcpClient.GetStream();
             if ( ntwStream.CanWrite ) {
                 Byte[] bytSend = Encoding.UTF8.GetBytes( msg );
-                await ntwStream.WriteAsync( bytSend, 0, bytSend.Length );
+                ntwStream.Write( bytSend, 0, bytSend.Length );
             } else {
                 VtLogger.A.Debug( "Cannot write tcp stream." );
             }
-
+            if ( ntwStream.CanRead ) {
+                const int maxLength = 1024;
+                Byte[] bytSend = new Byte[maxLength];
+                Byte[] bytSend2 = new Byte[ntwStream.Read( bytSend, 0, maxLength )];
+                for ( int i = 0; i < bytSend2.Length; i++ ) {
+                    bytSend2[i] = bytSend[i];
+                }
+                Resp = Encoding.UTF8.GetString( bytSend2 );
+            }
             ntwStream.Close();
             tcpClient.Close();
+            return Resp;
         }
     }
 }

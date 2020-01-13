@@ -57,40 +57,49 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CreateLobby.cs">
+    <Compile Include="GUI\CreateLobby.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CreateLobby.Designer.cs">
+    <Compile Include="GUI\CreateLobby.Designer.cs">
       <DependentUpon>CreateLobby.cs</DependentUpon>
     </Compile>
     <Compile Include="Global.cs" />
-    <Compile Include="InLobby.cs">
+    <Compile Include="GUI\InLobby.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InLobby.Designer.cs">
+    <Compile Include="GUI\InLobby.Designer.cs">
       <DependentUpon>InLobby.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainFrame.cs">
+    <Compile Include="GUI\InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainFrame.Designer.cs">
+    <Compile Include="GUI\InputBox.Designer.cs">
+      <DependentUpon>InputBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\MainFrame.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\MainFrame.Designer.cs">
       <DependentUpon>MainFrame.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerConfig.cs">
+    <Compile Include="GUI\ServerConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ServerConfig.Designer.cs">
+    <Compile Include="GUI\ServerConfig.Designer.cs">
       <DependentUpon>ServerConfig.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="CreateLobby.resx">
+    <EmbeddedResource Include="GUI\CreateLobby.resx">
       <DependentUpon>CreateLobby.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InLobby.resx">
+    <EmbeddedResource Include="GUI\InLobby.resx">
       <DependentUpon>InLobby.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainFrame.resx">
+    <EmbeddedResource Include="GUI\InputBox.resx">
+      <DependentUpon>InputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\MainFrame.resx">
       <DependentUpon>MainFrame.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -102,7 +111,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ServerConfig.resx">
+    <EmbeddedResource Include="GUI\ServerConfig.resx">
       <DependentUpon>ServerConfig.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
@@ -120,10 +129,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CSPath\stLib.CS\stLib.CS.csproj">
+      <Project>{b4cb0656-bd16-44f7-af66-c51abc8cc2ed}</Project>
+      <Name>stLib.CS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Vt.Client.Core\Vt.Client.Core.csproj">
       <Project>{39b389a4-b384-4072-890c-3bb555e9ce04}</Project>
       <Name>Vt.Client.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

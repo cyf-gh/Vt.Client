@@ -1,4 +1,5 @@
-﻿using System;
+﻿using stLib.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -31,12 +32,38 @@ namespace Vt.Client.Core {
 
         private void sendLocationPermantly()
         {
+            browserContoller.Hide();
+            browserContoller.TryLogin();
+            browserContoller.GoToVideoPage();
+            // browserContoller.Max();
+            Thread.Sleep( 3000 );
+            browserContoller.ShowVideoControl();
+            browserContoller.LocateVideoAtInFullScreenMode( "10" );
+            browserContoller.HideVideoControl();
+
             while ( true ) {
                 synccer.SendMessage(
                     protocolMaker.MakePackageMsg(
                         nickName,
                         browserContoller.GetCurrentLocationText() )
                     , ip, udpPort );
+
+                var recv = synccer.RecievMessage();
+                switch ( synccer.RecievMessage() ) {
+                    case "OK":
+                        browserContoller.
+                        continue;
+                    case "p":
+                        continue;
+                        
+                    default:
+                        if ( recv.Contains(":") ) {
+                            browserContoller.ShowVideoControl();
+                            browserContoller.LocateVideoBasic( recv );
+                            browserContoller.HideVideoControl();
+                        }
+                        break;
+                }
                 Console.WriteLine( synccer.RecievMessage() );
                 Thread.Sleep( 300 );
             }
@@ -55,12 +82,45 @@ namespace Vt.Client.Core {
     }
 
     public class LobbyBorrower {
-        public bool Lend( string ip, string tcpPort )
+        private readonly String ip;
+        private readonly String tcpPort;
+
+        public LobbyBorrower( string ip, string tcpPort, string lobbyName, string lobbyPassword )
+        {
+            this.ip = ip;
+            this.tcpPort = tcpPort;
+            LobbyName = lobbyName;
+            LobbyPassword = lobbyPassword;
+            LobbyName = lobbyName;
+        }
+
+        public String LobbyName { get; }
+        public String LobbyPassword { get; }
+
+        public string Lend( string msg )
         {
             try {
-                string lendLobbyContrast = "";
-                TcpClient_.SendMessage_ShortConnect( lendLobbyContrast, ip, tcpPort );
-                return true;
+                return TcpClient_.SendMessage_ShortConnect( msg, ip, tcpPort );
+            } catch ( Exception ex ) {
+                VtLogger.A.Error( ex.ToString() );
+                throw;
+            }
+        }
+
+        public string Return()
+        {
+            try {
+                return TcpClient_.SendMessage_ShortConnect( "delete_lobby@"+LobbyName, ip, tcpPort );
+            } catch ( Exception ex ) {
+                VtLogger.A.Error( ex.ToString() );
+                throw;
+            }
+        }
+
+        public string[] QueryViewers()
+        {
+            try {
+                return StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "get_lobby_viewers@" + LobbyName, ip, tcpPort )  );
             } catch ( Exception ex ) {
                 VtLogger.A.Error( ex.ToString() );
                 throw;

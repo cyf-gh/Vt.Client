@@ -11,5 +11,8 @@ namespace Vt.Client.App
         public static string IP { get; set; }
         public static string Udp_Port { get; set; }
         public static string Tcp_Port { get; set; }
+        public static string MyName { get; set; }
+
+        public static bool IsInLobby { get; set; } = false;
     }
 }

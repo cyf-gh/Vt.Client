@@ -25,37 +25,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.list_lobbies = new System.Windows.Forms.ListBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createLobbyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serversToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.serverConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tb_nick_name = new System.Windows.Forms.TextBox();
             this.btn_save_name = new System.Windows.Forms.Button();
-            this.serverConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.lb_lobs = new System.Windows.Forms.ListBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // list_lobbies
-            // 
-            this.list_lobbies.FormattingEnabled = true;
-            this.list_lobbies.ItemHeight = 15;
-            this.list_lobbies.Location = new System.Drawing.Point(11, 40);
-            this.list_lobbies.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.list_lobbies.Name = "list_lobbies";
-            this.list_lobbies.Size = new System.Drawing.Size(690, 319);
-            this.list_lobbies.TabIndex = 0;
             // 
             // menuStrip1
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
-            this.serversToolStripMenuItem});
+            this.serversToolStripMenuItem,
+            this.refreshToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(711, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(711, 30);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip";
             // 
@@ -82,6 +75,20 @@
             this.serversToolStripMenuItem.Size = new System.Drawing.Size(83, 24);
             this.serversToolStripMenuItem.Text = "Settings";
             // 
+            // serverConfigToolStripMenuItem
+            // 
+            this.serverConfigToolStripMenuItem.Name = "serverConfigToolStripMenuItem";
+            this.serverConfigToolStripMenuItem.Size = new System.Drawing.Size(191, 26);
+            this.serverConfigToolStripMenuItem.Text = "Server Config";
+            this.serverConfigToolStripMenuItem.Click += new System.EventHandler(this.serverConfigToolStripMenuItem_Click);
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(78, 24);
+            this.refreshToolStripMenuItem.Text = "Refresh";
+            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            // 
             // tb_nick_name
             // 
             this.tb_nick_name.Location = new System.Drawing.Point(349, 4);
@@ -96,27 +103,35 @@
             this.btn_save_name.Location = new System.Drawing.Point(582, 4);
             this.btn_save_name.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btn_save_name.Name = "btn_save_name";
-            this.btn_save_name.Size = new System.Drawing.Size(118, 23);
+            this.btn_save_name.Size = new System.Drawing.Size(118, 25);
             this.btn_save_name.TabIndex = 3;
             this.btn_save_name.Text = "Save Name";
             this.btn_save_name.UseVisualStyleBackColor = true;
             this.btn_save_name.Click += new System.EventHandler(this.btn_save_name_Click);
             // 
-            // serverConfigToolStripMenuItem
+            // backgroundWorker1
             // 
-            this.serverConfigToolStripMenuItem.Name = "serverConfigToolStripMenuItem";
-            this.serverConfigToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.serverConfigToolStripMenuItem.Text = "Server Config";
-            this.serverConfigToolStripMenuItem.Click += new System.EventHandler(this.serverConfigToolStripMenuItem_Click);
+            // 
+            // lb_lobs
+            // 
+            this.lb_lobs.Font = new System.Drawing.Font("宋体", 14F);
+            this.lb_lobs.FormattingEnabled = true;
+            this.lb_lobs.ItemHeight = 23;
+            this.lb_lobs.Location = new System.Drawing.Point(12, 31);
+            this.lb_lobs.Name = "lb_lobs";
+            this.lb_lobs.Size = new System.Drawing.Size(687, 326);
+            this.lb_lobs.TabIndex = 4;
+            this.lb_lobs.SelectedIndexChanged += new System.EventHandler(this.lb_lobs_SelectedIndexChanged);
+            this.lb_lobs.DoubleClick += new System.EventHandler(this.lb_lobs_DoubleClick);
             // 
             // MainFrame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(711, 375);
+            this.Controls.Add(this.lb_lobs);
             this.Controls.Add(this.btn_save_name);
             this.Controls.Add(this.tb_nick_name);
-            this.Controls.Add(this.list_lobbies);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MainMenuStrip = this.menuStrip1;
@@ -134,8 +149,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox list_lobbies;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createLobbyToolStripMenuItem;
@@ -143,6 +156,9 @@
         private System.Windows.Forms.TextBox tb_nick_name;
         private System.Windows.Forms.Button btn_save_name;
         private System.Windows.Forms.ToolStripMenuItem serverConfigToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.ListBox lb_lobs;
     }
 }
 
