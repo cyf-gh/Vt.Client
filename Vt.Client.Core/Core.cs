@@ -77,6 +77,25 @@ namespace Vt.Client.Core {
                 JsonConvert.SerializeObject( driver.Handle.Manage().Cookies.AllCookies.ToList() ) );
         }
 
+        public bool IsPause()
+        {
+            return driver.FindElementByXPath( "//*[@id=\"bilibiliPlayer\"]/div[1]" ).GetAttribute( "class" ).Contains( "pause" );
+        }
+
+        public void Pause()
+        {
+            if ( !IsPause() ) {
+                driver.FindElementByXPath( "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[9]/video" ).Click();
+            }
+        }
+
+        public void Play()
+        {
+            if ( IsPause() ) {
+                driver.FindElementByXPath( "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[9]/video" ).Click();
+            }
+        }
+
         /// <summary>
         /// 该函数会一直阻塞，直至登录界面跳转
         /// </summary>

@@ -32,40 +32,46 @@ namespace Vt.Client.Core {
 
         private void sendLocationPermantly()
         {
-            browserContoller.Hide();
+            //browserContoller.Hide();
             browserContoller.TryLogin();
             browserContoller.GoToVideoPage();
-            // browserContoller.Max();
+            //browserContoller.Max();
             Thread.Sleep( 3000 );
-            browserContoller.ShowVideoControl();
-            browserContoller.LocateVideoAtInFullScreenMode( "10" );
-            browserContoller.HideVideoControl();
+            //browserContoller.ShowVideoControl();
+            //browserContoller.LocateVideoAtInFullScreenMode( "10" );
+            //browserContoller.HideVideoControl();
 
             while ( true ) {
-                synccer.SendMessage(
-                    protocolMaker.MakePackageMsg(
-                        nickName,
-                        browserContoller.GetCurrentLocationText() )
-                    , ip, udpPort );
-
-                var recv = synccer.RecievMessage();
-                switch ( synccer.RecievMessage() ) {
-                    case "OK":
-                        browserContoller.
-                        continue;
-                    case "p":
-                        continue;
-                        
-                    default:
-                        if ( recv.Contains(":") ) {
-                            browserContoller.ShowVideoControl();
-                            browserContoller.LocateVideoBasic( recv );
-                            browserContoller.HideVideoControl();
-                        }
-                        break;
+                try {
+                    Thread.Sleep(100);
+                    var recv = synccer.SendMessage(
+                        protocolMaker.MakePackageMsg(
+                            nickName,
+                            browserContoller.GetCurrentLocationText(),
+                            browserContoller.IsPause() )
+                        , ip, udpPort );
+                    switch ( recv ) {
+                        case "OK":
+                            continue;
+                        case "p":
+                            browserContoller.Pause();
+                            continue;
+                        case "s":
+                            browserContoller.Play();
+                            continue;
+                        default:
+                            if ( recv.Contains(":") ) {
+                                browserContoller.ShowVideoControl();
+                                browserContoller.LocateVideoBasic( recv );
+                                browserContoller.HideVideoControl();
+                            }
+                            continue;
+                    }
+                    Console.WriteLine( synccer.RecievMessage() );
+                } catch ( Exception ex ) {
+                    Console.WriteLine( ex );
+                    continue;
                 }
-                Console.WriteLine( synccer.RecievMessage() );
-                Thread.Sleep( 300 );
             }
         }
         public Task SyncHandle { get; set; } = null;

@@ -38,6 +38,10 @@ namespace Vt.Client.App {
             if ( !isHost ) {
                 bt_start.Enabled = false;
                 bt_start.Text = "Waiting Host";
+                browserContoller = new BrowserContoller( tb_video_url.Text );
+
+                SyncWorker syncWorker = new SyncWorker( Global.MyName, browserContoller, Global.IP, Global.Udp_Port );
+                syncWorker.Do();
             }
         }
 
@@ -61,6 +65,11 @@ namespace Vt.Client.App {
 
         private void bgw_viewers_syncer_DoWork( Object sender, DoWorkEventArgs e )
         {
+            lb_viewerList.Items.Clear();
+            var lobs = borrower.QueryViewers();
+            foreach ( var l in lobs ) {
+                lb_viewerList.Items.Add( l );
+            }
         }
 
         private void lb_viewerList_SelectedIndexChanged( Object sender, EventArgs e )
@@ -70,31 +79,16 @@ namespace Vt.Client.App {
 
         private void button1_Click( Object sender, EventArgs e )
         {
-            lb_viewerList.Items.Clear();
-            var lobs = borrower.QueryViewers();
-            foreach ( var l in lobs ) {
-                lb_viewerList.Items.Add( l );
-            }
+
         }
 
         private void bt_start_Click( Object sender, EventArgs e )
         {
-            SyncWorker syncWorker = new SyncWorker();
-            syncWorker.Do();
             try {
                 browserContoller = new BrowserContoller( tb_video_url.Text );
-                browserContoller.Hide();
-                browserContoller.TryLogin();
-                browserContoller.GoToVideoPage();
-                browserContoller.Max();
-                browserContoller.ShowVideoControl();
-                browserContoller.LocateVideoBasic( "30" );
-                browserContoller.HideVideoControl();
-                // browserContoller.SetFullScreenMode();
-                Thread.Sleep( 3000 );
-                browserContoller.ShowVideoControl();
-                browserContoller.LocateVideoAtInFullScreenMode( "10" );
-                browserContoller.HideVideoControl();
+
+                SyncWorker syncWorker = new SyncWorker(Global.MyName, browserContoller, Global.IP, Global.Udp_Port);
+                syncWorker.Do();
                 // rec.Start();
             } catch ( Exception ex ) {
                 VtLogger.A.Error( ex.ToString() );

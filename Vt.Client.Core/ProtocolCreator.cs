@@ -18,9 +18,9 @@ namespace Vt.Client.Core.Protocol
             }
             return msg;
         }
-        public string MakePackageMsg(string name, string currentLocation) 
+        public string MakePackageMsg(string name, string currentLocation, bool isPause) 
         {
-            return string.Format("{0},{1},{2}", name, currentLocation, DateTime.Now);
+            return string.Format("{0},{1},{2}", name, currentLocation, isPause? "p": "s");
         }
         public string EnterLobby( string name, string password )
         {

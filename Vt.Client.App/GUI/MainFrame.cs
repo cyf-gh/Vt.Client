@@ -57,6 +57,7 @@ namespace Vt.Client.App {
 
         private void MainFrame_FormClosing( Object sender, FormClosingEventArgs e )
         {
+            // TcpClient_.SendMessage_ShortConnect( "", Global.IP, Global.Tcp_Port );
         }
 
         private void serverConfigToolStripMenuItem_Click( Object sender, EventArgs e )

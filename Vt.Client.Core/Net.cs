@@ -16,15 +16,18 @@ namespace Vt.Client.Core.Net {
             sender = new UdpClient();
         }
 
-        public void SendMessage( string message, string ip, string udpPort )
+        public string SendMessage( string message, string ip, string udpPort )
         {
             // var message = obj as string;
-            byte[] sendbytes = Encoding.Unicode.GetBytes( message );
+            byte[] sendbytes = Encoding.ASCII.GetBytes( message );
 
             IPEndPoint remoteIpep = new IPEndPoint(
                 IPAddress.Parse( ip ), Convert.ToInt32( udpPort ) ); // 发送到的IP地址和端口号
 
             sender.Send( sendbytes, sendbytes.Length, remoteIpep );
+            byte[] bytRecv = sender.Receive( ref remoteIpep );
+            string resp = Encoding.ASCII.GetString( bytRecv, 0, bytRecv.Length );
+            return resp;
         }
 
         public string RecievMessage()
@@ -32,7 +35,7 @@ namespace Vt.Client.Core.Net {
             IPEndPoint remoteIpep = new IPEndPoint( IPAddress.Any, 0 );
             byte[] bytRecv = sender.Receive( ref remoteIpep );
             string message = Encoding.ASCII.GetString( bytRecv, 0, bytRecv.Length );
-            return message + ',' + remoteIpep.ToString();
+            return message;
         }
     }
 
