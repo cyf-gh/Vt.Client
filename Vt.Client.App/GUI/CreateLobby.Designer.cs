@@ -36,6 +36,7 @@
             this.tb_url = new System.Windows.Forms.TextBox();
             this.lb_video_url = new System.Windows.Forms.Label();
             this.cb_is_share_cookie = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // tb_lobby_name
@@ -53,14 +54,14 @@
             this.lobby_name.AutoSize = true;
             this.lobby_name.Location = new System.Drawing.Point(3, 12);
             this.lobby_name.Name = "lobby_name";
-            this.lobby_name.Size = new System.Drawing.Size(95, 15);
+            this.lobby_name.Size = new System.Drawing.Size(84, 19);
             this.lobby_name.TabIndex = 1;
-            this.lobby_name.Text = "Lobby Name:";
+            this.lobby_name.Text = "房间名：";
             // 
             // lb_server_info
             // 
             this.lb_server_info.AutoSize = true;
-            this.lb_server_info.Location = new System.Drawing.Point(3, 143);
+            this.lb_server_info.Location = new System.Drawing.Point(8, 140);
             this.lb_server_info.Name = "lb_server_info";
             this.lb_server_info.Size = new System.Drawing.Size(79, 15);
             this.lb_server_info.TabIndex = 3;
@@ -68,12 +69,12 @@
             // 
             // btn_create_lobby
             // 
-            this.btn_create_lobby.Location = new System.Drawing.Point(464, 203);
+            this.btn_create_lobby.Location = new System.Drawing.Point(462, 202);
             this.btn_create_lobby.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btn_create_lobby.Name = "btn_create_lobby";
             this.btn_create_lobby.Size = new System.Drawing.Size(91, 32);
             this.btn_create_lobby.TabIndex = 4;
-            this.btn_create_lobby.Text = "Create";
+            this.btn_create_lobby.Text = "创建";
             this.btn_create_lobby.UseVisualStyleBackColor = true;
             this.btn_create_lobby.Click += new System.EventHandler(this.btn_create_lobby_Click);
             // 
@@ -83,7 +84,7 @@
             this.ddd_maxOffset.Items.Add("4");
             this.ddd_maxOffset.Items.Add("3");
             this.ddd_maxOffset.Items.Add("2");
-            this.ddd_maxOffset.Location = new System.Drawing.Point(111, 100);
+            this.ddd_maxOffset.Location = new System.Drawing.Point(149, 100);
             this.ddd_maxOffset.Name = "ddd_maxOffset";
             this.ddd_maxOffset.Size = new System.Drawing.Size(51, 25);
             this.ddd_maxOffset.TabIndex = 5;
@@ -95,10 +96,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 42);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 15);
+            this.label1.Size = new System.Drawing.Size(65, 19);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Password: ";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.label1.Text = "密码：";
             // 
             // tb_lbpswd
             // 
@@ -115,9 +115,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 102);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(95, 15);
+            this.label2.Size = new System.Drawing.Size(178, 19);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Max Offset:";
+            this.label2.Text = "最大可接受同步偏差";
             // 
             // tb_url
             // 
@@ -133,21 +133,31 @@
             this.lb_video_url.AutoSize = true;
             this.lb_video_url.Location = new System.Drawing.Point(3, 72);
             this.lb_video_url.Name = "lb_video_url";
-            this.lb_video_url.Size = new System.Drawing.Size(87, 15);
+            this.lb_video_url.Size = new System.Drawing.Size(95, 19);
             this.lb_video_url.TabIndex = 7;
-            this.lb_video_url.Text = "Video Url:";
+            this.lb_video_url.Text = "视频URL：";
+            this.lb_video_url.Click += new System.EventHandler(this.lb_video_url_Click);
             // 
             // cb_is_share_cookie
             // 
             this.cb_is_share_cookie.AutoSize = true;
             this.cb_is_share_cookie.Checked = true;
             this.cb_is_share_cookie.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cb_is_share_cookie.Location = new System.Drawing.Point(333, 211);
+            this.cb_is_share_cookie.Location = new System.Drawing.Point(434, 106);
             this.cb_is_share_cookie.Name = "cb_is_share_cookie";
-            this.cb_is_share_cookie.Size = new System.Drawing.Size(125, 19);
+            this.cb_is_share_cookie.Size = new System.Drawing.Size(119, 19);
             this.cb_is_share_cookie.TabIndex = 8;
-            this.cb_is_share_cookie.Text = "Share Cookie";
+            this.cb_is_share_cookie.Text = "共享登录状态";
             this.cb_is_share_cookie.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(206, 102);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(28, 19);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "秒";
             // 
             // CreateLobby
             // 
@@ -160,6 +170,7 @@
             this.Controls.Add(this.ddd_maxOffset);
             this.Controls.Add(this.btn_create_lobby);
             this.Controls.Add(this.lb_server_info);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lobby_name);
@@ -169,7 +180,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "CreateLobby";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "CreateLobby";
+            this.Text = "创建房间";
             this.Load += new System.EventHandler(this.CreateLobby_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -189,5 +200,6 @@
         private System.Windows.Forms.TextBox tb_url;
         private System.Windows.Forms.Label lb_video_url;
         private System.Windows.Forms.CheckBox cb_is_share_cookie;
+        private System.Windows.Forms.Label label3;
     }
 }

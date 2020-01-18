@@ -1,34 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Vt.Client.Core;
+using Vt.Client.WebController;
 using stLib.Log;
+using Vt.Client.Core;
 
 namespace Vt.Client.App {
     public partial class InLobby : Form {
         private readonly Boolean isHost;
         private readonly String lobbyName;
+        private readonly String cookie;
         private readonly String videoUrl;
         private readonly LobbyBorrower borrower;
         private BrowserContoller browserContoller;
-
-        public InLobby( bool isHost, string lobbyName, string videoUrl, LobbyBorrower borrower )
+        SyncWorker syncWorker;
+        public InLobby( bool isHost, string lobbyName, string cookie, string videoUrl, LobbyBorrower borrower )
         {
             InitializeComponent();
             this.isHost = isHost;
             this.lobbyName = lobbyName;
+            this.cookie = cookie;
             this.videoUrl = videoUrl;
             this.borrower = borrower;
             Global.IsInLobby = true;
-            // bgw_viewers_syncer.RunWorkerAsync();
-            this.Text = lobbyName;
+            bgw_viewers_syncer.RunWorkerAsync();
+            Text = "房间：" + lobbyName;
             tb_video_url.Text = videoUrl;
         }
 
@@ -38,9 +35,9 @@ namespace Vt.Client.App {
             if ( !isHost ) {
                 bt_start.Enabled = false;
                 bt_start.Text = "Waiting Host";
-                browserContoller = new BrowserContoller( tb_video_url.Text );
+                browserContoller = new BrowserContoller( tb_video_url.Text, cookie );
 
-                SyncWorker syncWorker = new SyncWorker( Global.MyName, browserContoller, Global.IP, Global.Udp_Port );
+                syncWorker = new SyncWorker( Global.MyName, browserContoller, Global.SelectedServer );
                 syncWorker.Do();
             }
         }
@@ -52,18 +49,28 @@ namespace Vt.Client.App {
 
         private void InLobby_FormClosing( Object sender, FormClosingEventArgs e )
         {
-            DialogResult result = MessageBox.Show( isHost ? "Close Lobby?" : "Exit Lobby?", "Info", MessageBoxButtons.OKCancel, MessageBoxIcon.Information );
+            DialogResult result = MessageBox.Show( isHost ? "是否关闭房间?\n这会导致您房间中的所有人视频中断。" : "是否退出房间?", "Info", MessageBoxButtons.OKCancel, MessageBoxIcon.Information );
             if ( result == DialogResult.OK ) {
                 Global.IsInLobby = false;
-                if ( isHost ) {
-                    borrower.Return();
+                try {
+                    syncWorker.Stop();
+                    bgw_viewers_syncer.CancelAsync();
+                    if ( isHost ) {
+                        borrower.Return();
+                    } else {
+                        borrower.Leave( Global.MyName );
+                    }
+                } catch ( Exception ex ) {
+                    MessageBox.Show( ex.Message );
                 }
             } else {
                 e.Cancel = true;
             }
         }
 
-        private void bgw_viewers_syncer_DoWork( Object sender, DoWorkEventArgs e )
+        public delegate void MyInvoke();
+
+        private void freshViewerList()
         {
             lb_viewerList.Items.Clear();
             var lobs = borrower.QueryViewers();
@@ -72,12 +79,21 @@ namespace Vt.Client.App {
             }
         }
 
+        private void bgw_viewers_syncer_DoWork( Object sender, DoWorkEventArgs e )
+        {
+            while ( true ) {
+                Thread.Sleep( 1000 );
+                MyInvoke mi = new MyInvoke( freshViewerList );
+                BeginInvoke( mi );
+            }
+        }
+
         private void lb_viewerList_SelectedIndexChanged( Object sender, EventArgs e )
         {
 
         }
 
-        private void button1_Click( Object sender, EventArgs e )
+        private void bt_refresh_Click( Object sender, EventArgs e )
         {
 
         }
@@ -85,11 +101,10 @@ namespace Vt.Client.App {
         private void bt_start_Click( Object sender, EventArgs e )
         {
             try {
-                browserContoller = new BrowserContoller( tb_video_url.Text );
+                browserContoller = new BrowserContoller( tb_video_url.Text, cookie );
 
-                SyncWorker syncWorker = new SyncWorker(Global.MyName, browserContoller, Global.IP, Global.Udp_Port);
+                syncWorker = new SyncWorker( Global.MyName, browserContoller, Global.SelectedServer );
                 syncWorker.Do();
-                // rec.Start();
             } catch ( Exception ex ) {
                 stLogger.Log( "", ex );
             }

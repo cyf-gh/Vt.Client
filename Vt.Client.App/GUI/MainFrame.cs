@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Vt.Client.App.GUI;
 using stLib.Net.Haste;
 using System.IO;
+using stLib.Win32;
 
 namespace Vt.Client.App {
     public partial class MainFrame : Form {
@@ -13,10 +14,15 @@ namespace Vt.Client.App {
             InitializeComponent();
         }
 
+        void freshServerStatus()
+        {
+            this.Text = "服务器信息：" + Global.SelectedServer?.Readable();
+        }
 
         private void MainFrame_Load( Object sender, EventArgs e )
         {
             tb_nick_name.Text = Global.MyName;
+            freshServerStatus();
         }
 
         private void createLobbyToolStripMenuItem_Click( Object sender, EventArgs e )
@@ -34,12 +40,14 @@ namespace Vt.Client.App {
         private void MainFrame_FormClosing( Object sender, FormClosingEventArgs e )
         {
             // 关闭房间，清理资源
-            // TcpClient_.SendMessage_ShortConnect( "", Global.IP, Global.Tcp_Port );
+            // TcpClient_.SendMessage_ShortConnect( "", Global.SelectedServer );
         }
 
         private void serverConfigToolStripMenuItem_Click( Object sender, EventArgs e )
         {
-
+            ServerConfig serverConfig = new ServerConfig();
+            serverConfig.ShowDialog();
+            freshServerStatus();
         }
 
         private async void refreshToolStripMenuItem_Click( Object sender, EventArgs e )
@@ -48,14 +56,19 @@ namespace Vt.Client.App {
             Cursor = Cursors.WaitCursor;
             var lobs = await Task.Run( () => {
                 try {
-                    return StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "query_lobbies", Global.IP, Global.Tcp_Port ) );
+                    return StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "query_lobbies@", Global.SelectedServer ) );
                 } catch ( Exception ex ) {
                     MessageBox.Show( ex.Message );
                     return null;
                 }
             } );
             Cursor = Cursors.Default;
+
             if ( lobs == null ) {
+                return;
+            }
+            if ( lobs.Count == 0 ) {
+                MessageBox.Show( "当前服务器中没有任何房间" );
                 return;
             }
             foreach ( var l in lobs ) {
@@ -66,7 +79,11 @@ namespace Vt.Client.App {
         private void lb_lobs_DoubleClick( Object sender, EventArgs e )
         {
             if ( Global.IsInLobby ) {
-                MessageBox.Show("您已在房间中，不能同时加入多个房间");
+                MessageBox.Show( "您已在房间中，不能同时加入多个房间" );
+                return;
+            }
+            if ( lb_lobs.SelectedIndex == -1 ) {
+                MessageBox.Show( "目前无房间可加入" );
                 return;
             }
             string lobbyName = lb_lobs.Items[lb_lobs.SelectedIndex].ToString();
@@ -77,6 +94,11 @@ namespace Vt.Client.App {
         private void tb_nick_name_MouseLeave( Object sender, EventArgs e )
         {
             File.WriteAllText( "./user.cfg", tb_nick_name.Text );
+        }
+
+        private void lb_lobs_SelectedIndexChanged( Object sender, EventArgs e )
+        {
+
         }
     }
 }

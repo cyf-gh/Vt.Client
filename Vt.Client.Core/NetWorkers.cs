@@ -8,28 +8,28 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using stLib.Net.Haste;
-using Vt.Client.Core.Protocol;
 using stLib.Log;
+using stLib.Net;
+using Vt.Client.WebController;
+using YPM.Packager;
 
 namespace Vt.Client.Core {
     public class SyncWorker {
-        public SyncWorker( string nickName, BrowserContoller browserContoller, string ip, string udpPort )
+        public SyncWorker( string nickName, IBrowserContoller browserContoller, IPPort ipport )
         {
             this.nickName = nickName;
             this.browserContoller = browserContoller;
-            this.ip = ip;
-            this.udpPort = udpPort;
             this.synccer = new UdpClient_();
+            this.ipport = ipport;
         }
 
         ProtocolMaker protocolMaker = new ProtocolMaker();
 
+        private readonly IPPort ipport;
         private bool stopFlag = false;
         private readonly UdpClient_ synccer;
         private readonly String nickName;
-        private readonly BrowserContoller browserContoller;
-        private readonly String ip;
-        private readonly String udpPort;
+        private readonly IBrowserContoller browserContoller;
 
         private void sendLocationPermantly()
         {
@@ -45,7 +45,7 @@ namespace Vt.Client.Core {
                             nickName,
                             browserContoller.GetCurrentLocationText(),
                             browserContoller.IsPause() )
-                        , ip, udpPort );
+                        , ipport );
                     Console.WriteLine( recv );
                     switch ( recv ) {
                         case "OK":
@@ -97,25 +97,26 @@ namespace Vt.Client.Core {
     }
 
     public class LobbyBorrower {
-        private readonly String ip;
-        private readonly String tcpPort;
-
-        public LobbyBorrower( string ip, string tcpPort, string lobbyName, string lobbyPassword )
+        private readonly IPPort ipport;
+        public LobbyBorrower( IPPort ipport, string lobbyName, string lobbyPassword )
         {
-            this.ip = ip;
-            this.tcpPort = tcpPort;
+            this.ipport = ipport;
             LobbyName = lobbyName;
             LobbyPassword = lobbyPassword;
             LobbyName = lobbyName;
+            udpClient = new UdpClient_();
         }
 
         public String LobbyName { get; }
+
+        private UdpClient_ udpClient;
+
         public String LobbyPassword { get; }
 
         public string Lend( string msg )
         {
             try {
-                return TcpClient_.SendMessage_ShortConnect( msg, ip, tcpPort );
+                return TcpClient_.SendMessage_ShortConnect( msg, ipport );
             } catch ( Exception ex ) {
                 stLogger.Log( ex.ToString() );
                 throw;
@@ -125,17 +126,32 @@ namespace Vt.Client.Core {
         public string Return()
         {
             try {
-                return TcpClient_.SendMessage_ShortConnect( "delete_lobby@" + LobbyName, ip, tcpPort );
+                return TcpClient_.SendMessage_ShortConnect( "delete_lobby@" + LobbyName, ipport );
             } catch ( Exception ex ) {
                 stLogger.Log( ex.ToString() );
                 throw;
             }
         }
 
-        public string[] QueryViewers()
+        public List<string> QueryViewers()
         {
             try {
-                return StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "get_lobby_viewers@" + LobbyName, ip, tcpPort ) );
+                return StringHelper.ParseComData( udpClient.SendMessage( "get_lobby_viewers@" + LobbyName, ipport ) );
+            } catch ( Exception ex ) {
+                stLogger.Log( ex.ToString() );
+                throw;
+            }
+        }
+
+        public string Leave( string myName )
+        {
+            try {
+                return TcpClient_.SendMessage_ShortConnect( 
+                    new ypmPackage( "exit_lobby",
+                                    new string[] {
+                                        myName, LobbyName
+                                    }).ToString()
+                    , ipport );
             } catch ( Exception ex ) {
                 stLogger.Log( ex.ToString() );
                 throw;
@@ -150,7 +166,5 @@ namespace Vt.Client.Core {
         {
             this.name = name;
         }
-
-
     }
 }

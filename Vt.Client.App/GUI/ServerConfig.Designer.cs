@@ -28,90 +28,37 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lb_server = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
-            // textBox1
+            // lb_server
             // 
-            this.textBox1.Location = new System.Drawing.Point(137, 12);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(226, 25);
-            this.textBox1.TabIndex = 0;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(253, 74);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(110, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "OK";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(137, 43);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(110, 25);
-            this.textBox2.TabIndex = 2;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(253, 43);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(110, 25);
-            this.textBox3.TabIndex = 3;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 15);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(39, 15);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "IPv4";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 46);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(111, 15);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Ports TCP/UDP";
+            this.lb_server.FormattingEnabled = true;
+            this.lb_server.ItemHeight = 15;
+            this.lb_server.Location = new System.Drawing.Point(12, 12);
+            this.lb_server.Name = "lb_server";
+            this.lb_server.Size = new System.Drawing.Size(317, 334);
+            this.lb_server.TabIndex = 0;
+            this.lb_server.SelectedIndexChanged += new System.EventHandler(this.lb_server_SelectedIndexChanged);
+            this.lb_server.DoubleClick += new System.EventHandler(this.lb_server_DoubleClick);
             // 
             // ServerConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(381, 112);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.ClientSize = new System.Drawing.Size(341, 365);
+            this.Controls.Add(this.lb_server);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ServerConfig";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ServerConfig";
+            this.Text = "服务器列表";
             this.Load += new System.EventHandler(this.ServerConfig_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ListBox lb_server;
     }
 }

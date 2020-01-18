@@ -30,12 +30,12 @@
             this.createLobbyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serversToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serverConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.登录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tb_nick_name = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lb_lobs = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.登录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,7 +65,7 @@
             // createLobbyToolStripMenuItem
             // 
             this.createLobbyToolStripMenuItem.Name = "createLobbyToolStripMenuItem";
-            this.createLobbyToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.createLobbyToolStripMenuItem.Size = new System.Drawing.Size(122, 26);
             this.createLobbyToolStripMenuItem.Text = "房间";
             this.createLobbyToolStripMenuItem.Click += new System.EventHandler(this.createLobbyToolStripMenuItem_Click);
             // 
@@ -80,9 +80,15 @@
             // serverConfigToolStripMenuItem
             // 
             this.serverConfigToolStripMenuItem.Name = "serverConfigToolStripMenuItem";
-            this.serverConfigToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.serverConfigToolStripMenuItem.Size = new System.Drawing.Size(137, 26);
             this.serverConfigToolStripMenuItem.Text = "服务器";
             this.serverConfigToolStripMenuItem.Click += new System.EventHandler(this.serverConfigToolStripMenuItem_Click);
+            // 
+            // 登录ToolStripMenuItem
+            // 
+            this.登录ToolStripMenuItem.Name = "登录ToolStripMenuItem";
+            this.登录ToolStripMenuItem.Size = new System.Drawing.Size(113, 24);
+            this.登录ToolStripMenuItem.Text = "登录视频网站";
             // 
             // refreshToolStripMenuItem
             // 
@@ -110,6 +116,7 @@
             this.lb_lobs.Name = "lb_lobs";
             this.lb_lobs.Size = new System.Drawing.Size(688, 326);
             this.lb_lobs.TabIndex = 4;
+            this.lb_lobs.SelectedIndexChanged += new System.EventHandler(this.lb_lobs_SelectedIndexChanged);
             this.lb_lobs.DoubleClick += new System.EventHandler(this.lb_lobs_DoubleClick);
             // 
             // label1
@@ -120,12 +127,6 @@
             this.label1.Size = new System.Drawing.Size(37, 15);
             this.label1.TabIndex = 5;
             this.label1.Text = "昵称";
-            // 
-            // 登录ToolStripMenuItem
-            // 
-            this.登录ToolStripMenuItem.Name = "登录ToolStripMenuItem";
-            this.登录ToolStripMenuItem.Size = new System.Drawing.Size(113, 24);
-            this.登录ToolStripMenuItem.Text = "登录视频网站";
             // 
             // MainFrame
             // 

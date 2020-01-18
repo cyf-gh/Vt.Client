@@ -1,15 +1,19 @@
-﻿using OpenQA.Selenium;
+﻿using Newtonsoft.Json;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Support.UI;
+using stLib.Log;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Vt.Client.WebController;
 
-namespace Vt.Client.Core {
+namespace Vt.Client.WebController {
     public static class BrowserSettings {
         [DllImport( "User32.dll" )]
         public extern static void SetCursorPos( int x, int y );
@@ -45,6 +49,36 @@ namespace Vt.Client.Core {
         public T RunJS<T>( string JsCode, string elemXPath )
         {
             return Handle.ExecuteJavaScript<T>( JsCode, FindElementByXPath(elemXPath) );
+        }
+        public void SaveLoginCookie( string filePath )
+        {
+            File.WriteAllText( filePath,
+                JsonConvert.SerializeObject( Handle.Manage().Cookies.AllCookies.ToList() ) );
+        }
+
+        public bool FeedCookieString( string cookie )
+        {
+            try {
+                Handle.Url = "https://www.bilibili.com";
+                var listCookie = JsonConvert.DeserializeObject<List<CookieTmp>>( cookie );
+                listCookie.ForEach( c => {
+                    Handle.Manage().Cookies.AddCookie( c.ToCookie() );
+                } );
+            } catch ( Exception ex ) {
+                stLogger.Log( "Read login cookie error: ", ex );
+                return false;
+            }
+            stLogger.Log( "[+] Local cookie login successed" );
+            return true;
+        }
+        public void Hide()
+        {
+            Window.Minimize();
+        }
+
+        public void Max()
+        {
+            Window.Maximize();
         }
     }
 }

@@ -1,46 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
 using System.IO;
 using Newtonsoft.Json;
-using System.Runtime.InteropServices;
-using OpenQA.Selenium.Support.Extensions;
 using stLib.Log;
+using Vt.Client.WebController;
 
-namespace Vt.Client.Core {
-
+namespace Vt.Client.WebController {
     /// <summary>
     /// Selenium提供的Cookie无法直接从json反序列化的对象构造，故创建一个中间对象
     /// </summary>
-    class CookieTmp {
-        public bool Secure { get; set; }
-        public bool IsHttpOnly { get; set; }
-        public string Name { get; set; }
-        public string Value { get; set; }
-        public string Domain { get; set; }
-        public string Path { get; set; }
-        public DateTime? Expiry { get; set; }
-
-        public Cookie ToCookie()
-        {
-            CookieTmp cookie = this;
-            return new Cookie( cookie.Name, cookie.Value, cookie.Domain, cookie.Path, Expiry );
-        }
-    }
-    public class BrowserContoller {
+    public class BrowserContoller : IBrowserContoller {
         DriverHelper driver;
         /// <summary>
         /// 视频地址
         /// </summary>
         public readonly string VideoUrl;
-        public BrowserContoller( string videoUrl )
+        private readonly String cookie;
+
+        public BrowserContoller( string videoUrl, string cookie )
         {
             driver = new DriverHelper();
             VideoUrl = videoUrl;
+            this.cookie = cookie;
+        }
+
+        bool FeedCookieString( string cookie )
+        {
+            try {
+                driver.Handle.Url = "https://www.bilibili.com";
+                var listCookie = JsonConvert.DeserializeObject<List<CookieTmp>>( cookie );
+                listCookie.ForEach( c => {
+                    driver.Handle.Manage().Cookies.AddCookie( c.ToCookie() );
+                } );
+            } catch ( Exception ex ) {
+                stLogger.Log( "Read login cookie error: \n" + cookie + "\n", ex );
+                return false;
+            }
+            stLogger.Log( "[+] Local cookie login successed" );
+            return true;
         }
 
         /// <summary>
@@ -49,32 +48,17 @@ namespace Vt.Client.Core {
         /// <returns></returns>
         bool canLoginFromLocalCookie()
         {
-            if( File.Exists( bilibiliCookiePath ) ) {
-                try {
-                    driver.Handle.Url = "https://www.bilibili.com";
-                    var listCookie = JsonConvert.DeserializeObject<List<CookieTmp>>( File.ReadAllText( bilibiliCookiePath ));
-                    listCookie.ForEach( cookie => {
-                        driver.Handle.Manage().Cookies.AddCookie( cookie.ToCookie() );
-                    } );
-                }
-                catch( Exception ex ) {
-                    stLogger.Log( "Read login cookie error: ", ex );
-                    return false;
-                }
-                stLogger.Log( "[+] Local cookie login successed" );
-                return true;
-            }
-            else {
-                File.Create( bilibiliCookiePath );
-                return false;
-            }
+            return FeedCookieString( CookieHelper.GetLocalCookieString( LocalCookieFilePath() ) );
         }
-        const string bilibiliCookiePath = "./login/bilibili.json";
+
+        bool canLoginFromStringCookie( string cookie )
+        {
+            return FeedCookieString( cookie );
+        }
 
         void saveLoginCookie()
         {
-            File.WriteAllText( bilibiliCookiePath,
-                JsonConvert.SerializeObject( driver.Handle.Manage().Cookies.AllCookies.ToList() ) );
+            driver.SaveLoginCookie( LocalCookieFilePath() );
         }
 
         public bool IsPause()
@@ -95,34 +79,23 @@ namespace Vt.Client.Core {
                 driver.FindElementByXPath( "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[9]/video" ).Click();
             }
         }
-
         /// <summary>
         /// 该函数会一直阻塞，直至登录界面跳转
         /// </summary>
+        /// <param name="cookie">默认值时尝试读取本地cookie</param>
         public void TryLogin()
         {
-            if( !canLoginFromLocalCookie() ) {
+            bool isLogin = this.cookie == "" ? canLoginFromLocalCookie() : canLoginFromStringCookie( cookie );
+            if ( !isLogin ) {
                 stLogger.Log( string.Format( "Local cookie login failed. Try to login in {0} seconds!", BrowserSettings.TimeOut ) );
                 driver.NavigateTo( "https://passport.bilibili.com/login" );
                 driver.WaitUntilTitleIs( "哔哩哔哩 (゜-゜)つロ 干杯~-bilibili" );
                 saveLoginCookie();
-            }
-            else {
+            } else {
                 driver.Handle.Navigate().Refresh();
                 return;
             }
         }
-
-        public void Hide()
-        {
-            driver.Window.Minimize();
-        }
-
-        public void Max()
-        {
-            driver.Window.Maximize();
-        }
-
         /// <summary>
         /// 将视频定位至location  
         /// </summary>
@@ -132,13 +105,7 @@ namespace Vt.Client.Core {
         /// </param>
         public void LocateVideoAtInFullScreenMode( string location )
         {
-            //Actions action = new Actions(driver);
-            //action.MoveToElement( driver.FindElementByXPath( "*[@id=\"bilibiliPlayer\"]/div[1]/div[1]" ) );
-            //action.MoveByOffset( 10, 30 );
-            //BrowserSettings.SetCursorPos( window.Position.X + 50, window.Position.Y + 50 );
-            //BrowserSettings.SetCursorPos( window.Position.X + 51, window.Position.Y + 50 );
-            //BrowserSettings.SetCursorPos( window.Position.X + 52, window.Position.Y + 50 );
-            if( IsFullScreen() ) {
+            if ( IsFullScreen() ) {
                 PressEnter(); // 唤出视频栏
             }
             LocateVideoBasic( location );
@@ -154,7 +121,7 @@ namespace Vt.Client.Core {
             // 按选时间进度按钮，准备跳转时间
             driver.FindElementByXPath( "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[2]/div/span[1]" ).Click(); s( 20 );
             var _elm_location_input = driver.FindElementByXPath( "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[2]/input" );
-            
+
             _elm_location_input.SendKeys( Keys.Control + 'a' ); s( 20 );
             _elm_location_input.SendKeys( Keys.Backspace ); s( 20 );
             _elm_location_input.SendKeys( location ); s( 20 );
@@ -202,7 +169,7 @@ namespace Vt.Client.Core {
         /// </returns>
         public string GetCurrentLocationText()
         {
-            return driver.RunJS<string>( 
+            return driver.RunJS<string>(
                 "return arguments[0].innerHTML",
                 "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[2]/div/span[1]"
                 );
@@ -213,7 +180,7 @@ namespace Vt.Client.Core {
             driver.RunJS<string>(
                 "arguments[0].className = 'bilibili-player-area video-state-blackside video-control-show'", // 显示视频控制组件
                 "//*[@id=\"bilibiliPlayer\"]/div[1]"
-                ); s(300);
+                ); s( 300 );
         }
 
         public void HideVideoControl()
@@ -227,6 +194,11 @@ namespace Vt.Client.Core {
         public void Close()
         {
             driver.Handle.Close();
+        }
+
+        public String LocalCookieFilePath()
+        {
+            return "./login/bilibili.json";
         }
     }
 }

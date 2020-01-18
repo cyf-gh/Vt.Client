@@ -130,9 +130,17 @@
       <Project>{869bf837-d460-4e10-bb06-ee69f9aa9ef3}</Project>
       <Name>stLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\CSPath\YPM.Net\YPM.Net\YPM.Net.csproj">
+      <Project>{310915d2-c44d-43cf-bed5-c4f626aa9cbe}</Project>
+      <Name>YPM.Net</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Vt.Client.Core\Vt.Client.Core.csproj">
-      <Project>{39b389a4-b384-4072-890c-3bb555e9ce04}</Project>
+      <Project>{E9FFED62-8990-4E0E-8A22-0E40FC06CE42}</Project>
       <Name>Vt.Client.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Vt.Client.WebController\Vt.Client.WebController.csproj">
+      <Project>{39b389a4-b384-4072-890c-3bb555e9ce04}</Project>
+      <Name>Vt.Client.WebController</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

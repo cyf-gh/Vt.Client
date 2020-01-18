@@ -5,9 +5,11 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Vt.Client.Core.Net;
+using stLib.Net.Haste;
+using Vt.Client.Core;
 
 namespace Vt.Client.App.GUI {
     public partial class InputBox : Form {
@@ -21,7 +23,7 @@ namespace Vt.Client.App.GUI {
 
         private void btn_OK_Click( Object sender, EventArgs e )
         {
-            var rep = TcpClient_.SendMessage_ShortConnect( string.Format( "join_lobby@{0},{1},{2}", lobName, Global.MyName, tb_text.Text ), Global.IP, Global.Tcp_Port );
+            var rep = TcpClient_.SendMessage_ShortConnect( string.Format( "join_lobby@{0},{1},{2}", lobName, Global.MyName, tb_text.Text ), Global.SelectedServer );
             switch ( rep ) {
                 case "PSWD_INCOR":
                     MessageBox.Show( "密码错误" );
@@ -37,8 +39,8 @@ namespace Vt.Client.App.GUI {
                 default:
                     break;
             }
-
-            InLobby inLobby = new InLobby( false, lobName, rep, new Core.LobbyBorrower( Global.IP, Global.Tcp_Port, lobName, tb_text.Text ) );
+            var url___cookie = Regex.Split( rep, @"\$_\$", RegexOptions.IgnoreCase );
+            InLobby inLobby = new InLobby( false, lobName, url___cookie[1], url___cookie[0], new LobbyBorrower( Global.SelectedServer, lobName, tb_text.Text ) );
             inLobby.Show();
             Close();
         }
