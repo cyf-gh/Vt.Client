@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vt.Client.Core;
-using Vt.Client.Core.Log;
+using stLib.Log;
 
 namespace Vt.Client.App {
     public partial class InLobby : Form {
@@ -91,7 +91,7 @@ namespace Vt.Client.App {
                 syncWorker.Do();
                 // rec.Start();
             } catch ( Exception ex ) {
-                VtLogger.A.Error( ex.ToString() );
+                stLogger.Log( "", ex );
             }
         }
     }

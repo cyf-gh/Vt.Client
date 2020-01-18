@@ -33,11 +33,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -64,14 +64,12 @@
   <ItemGroup>
     <Compile Include="Core.cs" />
     <Compile Include="DriverHelper.cs" />
-    <Compile Include="Logger.cs" />
     <Compile Include="Net.cs" />
     <Compile Include="NetWorkers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtocolCreator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NLog.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +82,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\CSPath\stLib.CS\stLib.CS.csproj">
-      <Project>{b4cb0656-bd16-44f7-af66-c51abc8cc2ed}</Project>
-      <Name>stLib.CS</Name>
+    <ProjectReference Include="..\..\..\CSPath\stLib.Net\stLib\stLib.csproj">
+      <Project>{869bf837-d460-4e10-bb06-ee69f9aa9ef3}</Project>
+      <Name>stLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

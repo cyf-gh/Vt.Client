@@ -36,9 +36,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -129,9 +126,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\CSPath\stLib.CS\stLib.CS.csproj">
-      <Project>{b4cb0656-bd16-44f7-af66-c51abc8cc2ed}</Project>
-      <Name>stLib.CS</Name>
+    <ProjectReference Include="..\..\..\CSPath\stLib.Net\stLib\stLib.csproj">
+      <Project>{869bf837-d460-4e10-bb06-ee69f9aa9ef3}</Project>
+      <Name>stLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\Vt.Client.Core\Vt.Client.Core.csproj">
       <Project>{39b389a4-b384-4072-890c-3bb555e9ce04}</Project>

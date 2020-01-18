@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vt.Client.App.GUI;
 using Vt.Client.Core;
-using Vt.Client.Core.Log;
+using stLib.Log;
 using Vt.Client.Core.Net;
 
 namespace Vt.Client.App {
@@ -67,8 +67,14 @@ namespace Vt.Client.App {
 
         private void refreshToolStripMenuItem_Click( Object sender, EventArgs e )
         {
+            string [] lobs = null;
             lb_lobs.Items.Clear();
-            var lobs = StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "query_lobbies@nil", Global.IP, Global.Tcp_Port ) );
+            try {
+                lobs = StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "query_lobbies", Global.IP, Global.Tcp_Port ) );
+            } catch ( Exception ex ) {
+                MessageBox.Show(ex.Message);
+                return;
+            }
             foreach ( var l in lobs ) {
                 lb_lobs.Items.Add( l );
             }

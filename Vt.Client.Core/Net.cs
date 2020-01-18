@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Vt.Client.Core.Log;
+using stLib.Log;
 
 namespace Vt.Client.Core.Net {
     public class UdpClient_ {
@@ -47,6 +47,7 @@ namespace Vt.Client.Core.Net {
             try {
                 tcpClient.Connect( IPAddress.Parse( ip ), Convert.ToInt32( tcpPort ) );
             } catch ( Exception ex ) {
+                stLogger.Log( "", ex );
                 throw ex;
             }
 
@@ -55,7 +56,7 @@ namespace Vt.Client.Core.Net {
                 Byte[] bytSend = Encoding.UTF8.GetBytes( msg );
                 ntwStream.Write( bytSend, 0, bytSend.Length );
             } else {
-                VtLogger.A.Debug( "Cannot write tcp stream." );
+                stLogger.Log( "Cannot write tcp stream." );
             }
             if ( ntwStream.CanRead ) {
                 const int maxLength = 1024;

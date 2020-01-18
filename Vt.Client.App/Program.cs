@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vt.Client.Core;
-using Vt.Client.Core.Log;
+using stLib.Log;
 
 namespace Vt.Client.App {
     static class Program {
@@ -32,6 +32,7 @@ namespace Vt.Client.App {
         [STAThread]
         static void Main()
         {
+            stLogger.Init();
             try
             {
                 LoadServerInfo();
@@ -39,7 +40,7 @@ namespace Vt.Client.App {
             }
             catch (Exception ex)
             {
-                VtLogger.A.Error( ex.ToString() );
+                stLogger.Log( ex.ToString() );
                 MessageBox.Show(ex.Message);
                 throw;
             }

@@ -7,9 +7,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Vt.Client.Core.Log;
 using Vt.Client.Core.Net;
 using Vt.Client.Core.Protocol;
+using stLib.Log;
 
 namespace Vt.Client.Core {
     public class SyncWorker {
@@ -108,7 +108,7 @@ namespace Vt.Client.Core {
             try {
                 return TcpClient_.SendMessage_ShortConnect( msg, ip, tcpPort );
             } catch ( Exception ex ) {
-                VtLogger.A.Error( ex.ToString() );
+                stLogger.Log( ex.ToString() );
                 throw;
             }
         }
@@ -118,7 +118,7 @@ namespace Vt.Client.Core {
             try {
                 return TcpClient_.SendMessage_ShortConnect( "delete_lobby@"+LobbyName, ip, tcpPort );
             } catch ( Exception ex ) {
-                VtLogger.A.Error( ex.ToString() );
+                stLogger.Log( ex.ToString() );
                 throw;
             }
         }
@@ -128,7 +128,7 @@ namespace Vt.Client.Core {
             try {
                 return StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "get_lobby_viewers@" + LobbyName, ip, tcpPort )  );
             } catch ( Exception ex ) {
-                VtLogger.A.Error( ex.ToString() );
+                stLogger.Log( ex.ToString() );
                 throw;
             }
         }

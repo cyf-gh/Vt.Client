@@ -9,7 +9,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Runtime.InteropServices;
 using OpenQA.Selenium.Support.Extensions;
-using Vt.Client.Core.Log;
+using stLib.Log;
 
 namespace Vt.Client.Core {
 
@@ -58,10 +58,10 @@ namespace Vt.Client.Core {
                     } );
                 }
                 catch( Exception ex ) {
-                    VtLogger.A.Error( "Read login cookie error: " + ex.Message );
+                    stLogger.Log( "Read login cookie error: ", ex );
                     return false;
                 }
-                VtLogger.A.Info( "[+] Local cookie login successed" );
+                stLogger.Log( "[+] Local cookie login successed" );
                 return true;
             }
             else {
@@ -102,7 +102,7 @@ namespace Vt.Client.Core {
         public void TryLogin()
         {
             if( !canLoginFromLocalCookie() ) {
-                VtLogger.A.Info( string.Format( "Local cookie login failed. Try to login in {0} seconds!", BrowserSettings.TimeOut ) );
+                stLogger.Log( string.Format( "Local cookie login failed. Try to login in {0} seconds!", BrowserSettings.TimeOut ) );
                 driver.NavigateTo( "https://passport.bilibili.com/login" );
                 driver.WaitUntilTitleIs( "哔哩哔哩 (゜-゜)つロ 干杯~-bilibili" );
                 saveLoginCookie();
