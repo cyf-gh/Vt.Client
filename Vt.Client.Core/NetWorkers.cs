@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Vt.Client.Core.Net;
+using stLib.Net.Haste;
 using Vt.Client.Core.Protocol;
 using stLib.Log;
 
@@ -24,6 +24,7 @@ namespace Vt.Client.Core {
 
         ProtocolMaker protocolMaker = new ProtocolMaker();
 
+        private bool stopFlag = false;
         private readonly UdpClient_ synccer;
         private readonly String nickName;
         private readonly BrowserContoller browserContoller;
@@ -32,24 +33,20 @@ namespace Vt.Client.Core {
 
         private void sendLocationPermantly()
         {
-            //browserContoller.Hide();
             browserContoller.TryLogin();
             browserContoller.GoToVideoPage();
-            //browserContoller.Max();
             Thread.Sleep( 3000 );
-            //browserContoller.ShowVideoControl();
-            //browserContoller.LocateVideoAtInFullScreenMode( "10" );
-            //browserContoller.HideVideoControl();
 
-            while ( true ) {
+            while ( !stopFlag ) {
                 try {
-                    Thread.Sleep(100);
+                    Thread.Sleep( 200 );
                     var recv = synccer.SendMessage(
                         protocolMaker.MakePackageMsg(
                             nickName,
                             browserContoller.GetCurrentLocationText(),
                             browserContoller.IsPause() )
                         , ip, udpPort );
+                    Console.WriteLine( recv );
                     switch ( recv ) {
                         case "OK":
                             continue;
@@ -60,14 +57,13 @@ namespace Vt.Client.Core {
                             browserContoller.Play();
                             continue;
                         default:
-                            if ( recv.Contains(":") ) {
+                            if ( recv.Contains( ":" ) ) {
                                 browserContoller.ShowVideoControl();
                                 browserContoller.LocateVideoBasic( recv );
                                 browserContoller.HideVideoControl();
                             }
                             continue;
                     }
-                    Console.WriteLine( synccer.RecievMessage() );
                 } catch ( Exception ex ) {
                     Console.WriteLine( ex );
                     continue;
@@ -78,12 +74,25 @@ namespace Vt.Client.Core {
         public void Do()
         {
             TaskFactory taskFactory = new TaskFactory();
+            stopFlag = false;
             SyncHandle = taskFactory.StartNew( sendLocationPermantly );
+        }
+
+        public void Resume()
+        {
+
+        }
+
+        public void Pause()
+        {
+
         }
 
         public void Stop()
         {
-            SyncHandle.GetAwaiter();
+            if ( SyncHandle != null ) {
+                stopFlag = true;
+            }
         }
     }
 
@@ -116,7 +125,7 @@ namespace Vt.Client.Core {
         public string Return()
         {
             try {
-                return TcpClient_.SendMessage_ShortConnect( "delete_lobby@"+LobbyName, ip, tcpPort );
+                return TcpClient_.SendMessage_ShortConnect( "delete_lobby@" + LobbyName, ip, tcpPort );
             } catch ( Exception ex ) {
                 stLogger.Log( ex.ToString() );
                 throw;
@@ -126,7 +135,7 @@ namespace Vt.Client.Core {
         public string[] QueryViewers()
         {
             try {
-                return StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "get_lobby_viewers@" + LobbyName, ip, tcpPort )  );
+                return StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "get_lobby_viewers@" + LobbyName, ip, tcpPort ) );
             } catch ( Exception ex ) {
                 stLogger.Log( ex.ToString() );
                 throw;
@@ -134,4 +143,14 @@ namespace Vt.Client.Core {
         }
     }
 
+    public class Viewer {
+        private readonly String name;
+
+        public Viewer( string name )
+        {
+            this.name = name;
+        }
+
+
+    }
 }
