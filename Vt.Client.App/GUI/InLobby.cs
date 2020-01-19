@@ -53,6 +53,7 @@ namespace Vt.Client.App {
             if ( result == DialogResult.OK ) {
                 Global.IsInLobby = false;
                 try {
+                    browserContoller.Close();
                     syncWorker.Stop();
                     bgw_viewers_syncer.CancelAsync();
                     if ( isHost ) {

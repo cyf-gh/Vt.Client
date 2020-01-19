@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using Vt.Client.Core;
 using Vt.Client.WebController;
@@ -23,6 +24,13 @@ namespace Vt.Client.App {
                 Cursor = Cursors.Default;
                 return;
             }
+
+            if ( cb_is_share_cookie.Checked ) {
+                if ( !File.Exists( "./login/bilibili.json" ) ) {
+                    MessageBox.Show("未找到登录的本地信息\n您还未登录bilibili，请回到主界面的登陆选项登录\n或取消共享登录状态的选项");
+                    return;
+                }
+            }
             try {
                 LobbyBorrower lobbyBorrower = new LobbyBorrower( Global.SelectedServer, tb_lobby_name.Text, tb_lbpswd.Text );
                 ProtocolMaker protocolMaker = new ProtocolMaker();
@@ -44,7 +52,7 @@ namespace Vt.Client.App {
                         break;
                     }
                     case "LOBBY_ALREADY_EXISTS": {
-                        MessageBox.Show( "Fatal", "There's a same named lobby existed.\nPlease try for another name" );
+                        MessageBox.Show( "错误", "已经有一个同样名字的房间存在，\n请使用其他名字重试。" );
                         break;
                     }
                     default: {
@@ -62,7 +70,7 @@ namespace Vt.Client.App {
         {
             stLib.Common.Random rd = new stLib.Common.Random();
             tb_lobby_name.Text = "Lobby" + rd.GetInt32().ToString();
-            lb_server_info.Text = string.Format( "Server IP: {0}\n Udp:{1}\n Tcp:{2}", Global.SelectedServer.IP, Global.SelectedServer.UdpPort, Global.SelectedServer.TcpPort );
+            Text = Global.SelectedServer.Readable(); 
             ddd_maxOffset.SelectedIndex = 0;
         }
 

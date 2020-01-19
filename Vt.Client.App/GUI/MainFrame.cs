@@ -6,6 +6,7 @@ using Vt.Client.App.GUI;
 using stLib.Net.Haste;
 using System.IO;
 using stLib.Win32;
+using Vt.Client.WebController;
 
 namespace Vt.Client.App {
     public partial class MainFrame : Form {
@@ -16,14 +17,34 @@ namespace Vt.Client.App {
 
         void freshServerStatus()
         {
-            this.Text = "服务器信息：" + Global.SelectedServer?.Readable();
+            Text = "服务器信息：" + Global.SelectedServer?.Readable();
         }
 
-        private void MainFrame_Load( Object sender, EventArgs e )
+        private async void MainFrame_Load( Object sender, EventArgs e )
         {
             tb_nick_name.Text = Global.MyName;
+
+            freshLoginStatus();
             freshServerStatus();
+            await RefreshLobby();
         }
+
+        void freshLoginStatus()
+        {
+            if ( File.ReadAllText( "./login/bilibili.json" ) != "" ) {
+                BiliBiliToolStrip.Text = "哔哩哔哩（已登录）";
+            }
+        }
+
+        //private void FeedMenuItem( ToolStripMenuItem parent, string _path, string extension, EventHandler clickEvt )
+        //{
+        //    foreach ( var path in ProjectDirectoryHelper.GetSpecificFilePaths( _path, extension ) ) {
+        //        var menuItem = new KeyValueToolStripMenuItem( GetFileName( path ) );
+        //        menuItem.Click += clickEvt;
+        //        menuItem.Value = path;
+        //        parent.DropDownItems.Add( menuItem );
+        //    }
+        //}
 
         private void createLobbyToolStripMenuItem_Click( Object sender, EventArgs e )
         {
@@ -39,8 +60,13 @@ namespace Vt.Client.App {
 
         private void MainFrame_FormClosing( Object sender, FormClosingEventArgs e )
         {
+            DialogResult result = MessageBox.Show( "是否退出？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Information );
             // 关闭房间，清理资源
             // TcpClient_.SendMessage_ShortConnect( "", Global.SelectedServer );
+            if ( result == DialogResult.OK ) {
+            } else {
+                e.Cancel = true;
+            }
         }
 
         private void serverConfigToolStripMenuItem_Click( Object sender, EventArgs e )
@@ -50,7 +76,7 @@ namespace Vt.Client.App {
             freshServerStatus();
         }
 
-        private async void refreshToolStripMenuItem_Click( Object sender, EventArgs e )
+        public async Task RefreshLobby()
         {
             lb_lobs.Items.Clear();
             Cursor = Cursors.WaitCursor;
@@ -99,6 +125,56 @@ namespace Vt.Client.App {
         private void lb_lobs_SelectedIndexChanged( Object sender, EventArgs e )
         {
 
+        }
+
+        private void serversToolStripMenuItem_Click( Object sender, EventArgs e )
+        {
+
+        }
+
+        private async void testCurrentServer_Click( Object sender, EventArgs e )
+        {
+            Cursor = Cursors.WaitCursor;
+            bool ok = await Task.Run( () => {
+                try {
+                    UdpClient_ udpClient_ = new UdpClient_();
+                    string tcpRe = TcpClient_.SendMessage_ShortConnect( "ping@", Global.SelectedServer );
+                    string udpRe = udpClient_.SendMessage( "ping@", Global.SelectedServer );
+                    if ( tcpRe == "OK" && udpRe == "OK" ) {
+                        return true;
+                    }
+                    return false;
+                } catch ( Exception ex ) {
+                    MessageBox.Show( ex.Message );
+                    return false;
+                }
+            } );
+            if ( ok ) {
+                MessageBox.Show( "OK", Global.SelectedServer.Readable());
+            }
+            Cursor = Cursors.Default;
+        }
+
+        private async void btn_refresh_Click( Object sender, EventArgs e )
+        {
+            await RefreshLobby();
+        }
+
+        private void BiliBiliToolStrip_Click( Object sender, EventArgs e )
+        {
+            if ( File.ReadAllText( "./login/bilibili.json" ) != "" ) {
+                DialogResult result = MessageBox.Show( "是否重写登录？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Information );
+                if ( result == DialogResult.Cancel ) {
+                    return;
+                } else {
+                    File.WriteAllText( "./login/bilibili.json", "" );
+                }
+            }
+            BrowserContoller c = new BrowserContoller( "", "" );
+            c.TryLogin();
+            c.Close();
+            freshLoginStatus();
+            MessageBox.Show( File.Exists( "./login/bilibili.json" ) ? "登陆成功！" : "登录失败，未保存登录信息\n请重试", "登录状态" );
         }
     }
 }
