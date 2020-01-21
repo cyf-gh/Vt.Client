@@ -35,11 +35,22 @@ namespace Vt.Client.App {
             if ( !isHost ) {
                 bt_start.Enabled = false;
                 bt_start.Text = "Waiting Host";
-                browserContoller = new BrowserContoller( tb_video_url.Text, cookie, Global.WebdriverDir, Global.ChromeBinPath );
+                browserContoller = new BrowserContoller( GetVideoGenre(), tb_video_url.Text, cookie, Global.WebdriverDir, Global.ChromeBinPath );
 
                 syncWorker = new SyncWorker( Global.MyName, browserContoller, Global.SelectedServer );
                 syncWorker.Do();
             }
+        }
+
+        private BiliVideoGenre GetVideoGenre()
+        {
+            if ( videoUrl.Contains( "bilibili.com/bangumi" ) ) {
+                return BiliVideoGenre.BANGUMI;
+            }
+            if ( videoUrl.Contains( "bilibili.com/video" ) ) {
+                return BiliVideoGenre.VIDEO;
+            }
+            return BiliVideoGenre.UNKNOWN;
         }
 
         private void tb_video_url_TextChanged( Object sender, EventArgs e )
@@ -97,8 +108,10 @@ namespace Vt.Client.App {
         private void bt_start_Click( Object sender, EventArgs e )
         {
             try {
-                browserContoller = new BrowserContoller( tb_video_url.Text, cookie, Global.WebdriverDir, Global.ChromeBinPath );
-
+                browserContoller = new BrowserContoller( GetVideoGenre(), tb_video_url.Text, cookie, Global.WebdriverDir, Global.ChromeBinPath );
+                if ( syncWorker != null ) {
+                    return;
+                }
                 syncWorker = new SyncWorker( Global.MyName, browserContoller, Global.SelectedServer );
                 syncWorker.Do();
             } catch ( Exception ex ) {

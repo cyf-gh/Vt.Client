@@ -43,7 +43,8 @@ namespace Vt.Client.Core {
 
             while ( !stopFlag ) {
                 try {
-                    Thread.Sleep( 200 );
+                    Console.WriteLine( browserContoller.GetCurrentLocationText() );
+                    Thread.Sleep( 900 );
                     var recv = synccer.SendMessage(
                         protocolMaker.MakePackageMsg(
                             nickName,

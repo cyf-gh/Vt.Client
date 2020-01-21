@@ -26,7 +26,7 @@ namespace Vt.Client.App {
             }
 
             if ( cb_is_share_cookie.Checked ) {
-                if ( !File.Exists( "./login/bilibili.json" ) ) {
+                if ( File.ReadAllText( "./login/bilibili.json" ) == "" ) {
                     MessageBox.Show("未找到登录的本地信息\n您还未登录bilibili，请回到主界面的登陆选项登录\n或取消共享登录状态的选项");
                     return;
                 }

@@ -8,22 +8,44 @@ using stLib.Log;
 using Vt.Client.WebController;
 
 namespace Vt.Client.WebController {
+    public enum BiliVideoGenre {
+        BANGUMI,
+        VIDEO,
+        UNKNOWN
+    }
     /// <summary>
     /// Selenium提供的Cookie无法直接从json反序列化的对象构造，故创建一个中间对象
     /// </summary>
     public class BrowserContoller : IBrowserContoller {
         DriverHelper driver;
+        private readonly BiliVideoGenre genre;
+        private readonly string XPathTimeLocation;
+        private readonly string XPathTimeLocationInput;
         /// <summary>
         /// 视频地址
         /// </summary>
         public readonly string VideoUrl;
         private readonly String cookie;
 
-        public BrowserContoller( string videoUrl, string cookie, string webdriverLocation = "./external/webdriver", string chromeBinaryLocation = null )
+        public BrowserContoller( BiliVideoGenre genre, string videoUrl, string cookie, string webdriverLocation = "./external/webdriver", string chromeBinaryLocation = null )
         {
             driver = new DriverHelper( webdriverLocation, chromeBinaryLocation );
+            this.genre = genre;
             VideoUrl = videoUrl;
             this.cookie = cookie;
+
+            switch ( genre ) {
+                case BiliVideoGenre.BANGUMI:
+                    XPathTimeLocation = "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[3]/div/span[1]";
+                    XPathTimeLocationInput = "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[3]/input";
+                    break;
+                case BiliVideoGenre.VIDEO:
+                    XPathTimeLocation = "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[2]/div/span[1]";
+                    XPathTimeLocationInput = "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[2]/input";
+                    break;
+                default:
+                    break;
+            }
         }
 
         bool FeedCookieString( string cookie )
@@ -123,9 +145,8 @@ namespace Vt.Client.WebController {
         public void LocateVideoBasic( string location )
         {
             // 按选时间进度按钮，准备跳转时间
-            driver.FindElementByXPath( "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[2]/div/span[1]" ).Click(); s( 20 );
-            var _elm_location_input = driver.FindElementByXPath( "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[2]/input" );
-
+            driver.FindElementByXPath( XPathTimeLocation ).Click(); s( 20 );
+            var _elm_location_input = driver.FindElementByXPath( XPathTimeLocationInput );
             _elm_location_input.SendKeys( Keys.Control + 'a' ); s( 20 );
             _elm_location_input.SendKeys( Keys.Backspace ); s( 20 );
             _elm_location_input.SendKeys( location ); s( 20 );
@@ -175,7 +196,7 @@ namespace Vt.Client.WebController {
         {
             return driver.RunJS<string>(
                 "return arguments[0].innerHTML",
-                "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[2]/div/span[1]"
+                XPathTimeLocation
                 );
         }
 
@@ -193,6 +214,8 @@ namespace Vt.Client.WebController {
                 "arguments[0].className = 'bilibili-player-area video-state-blackside'",
                 "//*[@id=\"bilibiliPlayer\"]/div[1]"
                 );
+
+            //
         }
 
         public void Close()

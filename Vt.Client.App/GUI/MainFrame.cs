@@ -172,7 +172,7 @@ namespace Vt.Client.App {
                     File.WriteAllText( "./login/bilibili.json", "" );
                 }
             }
-            BrowserContoller c = new BrowserContoller( "", "", Global.WebdriverDir, Global.ChromeBinPath );
+            BrowserContoller c = new BrowserContoller( BiliVideoGenre.UNKNOWN, "", "", Global.WebdriverDir, Global.ChromeBinPath );
             try {
                 c.TryLogin();
             } catch ( Exception ex ) {
