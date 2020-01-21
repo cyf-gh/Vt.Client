@@ -29,7 +29,6 @@
             this.bt_start = new System.Windows.Forms.Button();
             this.lb_viewerList = new System.Windows.Forms.ListBox();
             this.bgw_viewers_syncer = new System.ComponentModel.BackgroundWorker();
-            this.btn_refresh = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tb_video_url
@@ -68,22 +67,11 @@
             this.bgw_viewers_syncer.WorkerSupportsCancellation = true;
             this.bgw_viewers_syncer.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgw_viewers_syncer_DoWork);
             // 
-            // btn_refresh
-            // 
-            this.btn_refresh.Location = new System.Drawing.Point(11, 317);
-            this.btn_refresh.Name = "btn_refresh";
-            this.btn_refresh.Size = new System.Drawing.Size(91, 32);
-            this.btn_refresh.TabIndex = 3;
-            this.btn_refresh.Text = "刷新";
-            this.btn_refresh.UseVisualStyleBackColor = true;
-            this.btn_refresh.Click += new System.EventHandler(this.bt_refresh_Click);
-            // 
             // InLobby
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(711, 361);
-            this.Controls.Add(this.btn_refresh);
             this.Controls.Add(this.lb_viewerList);
             this.Controls.Add(this.bt_start);
             this.Controls.Add(this.tb_video_url);
@@ -105,6 +93,5 @@
         private System.Windows.Forms.Button bt_start;
         private System.Windows.Forms.ListBox lb_viewerList;
         private System.ComponentModel.BackgroundWorker bgw_viewers_syncer;
-        private System.Windows.Forms.Button btn_refresh;
     }
 }

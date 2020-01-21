@@ -28,17 +28,18 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createLobbyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.登录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.BiliBiliToolStrip = new System.Windows.Forms.ToolStripMenuItem();
+            this.ClearLoginStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serversToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.serverConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TestCurrentServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.登录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tb_nick_name = new System.Windows.Forms.TextBox();
             this.lb_lobs = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btn_refresh = new System.Windows.Forms.Button();
-            this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.BiliBiliToolStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,9 +69,32 @@
             // createLobbyToolStripMenuItem
             // 
             this.createLobbyToolStripMenuItem.Name = "createLobbyToolStripMenuItem";
-            this.createLobbyToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.createLobbyToolStripMenuItem.Size = new System.Drawing.Size(122, 26);
             this.createLobbyToolStripMenuItem.Text = "房间";
             this.createLobbyToolStripMenuItem.Click += new System.EventHandler(this.createLobbyToolStripMenuItem_Click);
+            // 
+            // 登录ToolStripMenuItem
+            // 
+            this.登录ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.BiliBiliToolStrip,
+            this.ClearLoginStatusToolStripMenuItem});
+            this.登录ToolStripMenuItem.Name = "登录ToolStripMenuItem";
+            this.登录ToolStripMenuItem.Size = new System.Drawing.Size(113, 24);
+            this.登录ToolStripMenuItem.Text = "登录视频网站";
+            // 
+            // BiliBiliToolStrip
+            // 
+            this.BiliBiliToolStrip.Name = "BiliBiliToolStrip";
+            this.BiliBiliToolStrip.Size = new System.Drawing.Size(224, 26);
+            this.BiliBiliToolStrip.Text = "哔哩哔哩";
+            this.BiliBiliToolStrip.Click += new System.EventHandler(this.BiliBiliToolStrip_Click);
+            // 
+            // ClearLoginStatusToolStripMenuItem
+            // 
+            this.ClearLoginStatusToolStripMenuItem.Name = "ClearLoginStatusToolStripMenuItem";
+            this.ClearLoginStatusToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.ClearLoginStatusToolStripMenuItem.Text = "清空登陆状态";
+            this.ClearLoginStatusToolStripMenuItem.Click += new System.EventHandler(this.ClearLoginStatusToolStripMenuItem_Click);
             // 
             // serversToolStripMenuItem
             // 
@@ -85,32 +109,31 @@
             // serverConfigToolStripMenuItem
             // 
             this.serverConfigToolStripMenuItem.Name = "serverConfigToolStripMenuItem";
-            this.serverConfigToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.serverConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.serverConfigToolStripMenuItem.Text = "选择";
             this.serverConfigToolStripMenuItem.Click += new System.EventHandler(this.serverConfigToolStripMenuItem_Click);
             // 
             // TestCurrentServerToolStripMenuItem
             // 
             this.TestCurrentServerToolStripMenuItem.Name = "TestCurrentServerToolStripMenuItem";
-            this.TestCurrentServerToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.TestCurrentServerToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.TestCurrentServerToolStripMenuItem.Text = "测试当前";
             this.TestCurrentServerToolStripMenuItem.Click += new System.EventHandler(this.testCurrentServer_Click);
-            // 
-            // 登录ToolStripMenuItem
-            // 
-            this.登录ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.BiliBiliToolStrip});
-            this.登录ToolStripMenuItem.Name = "登录ToolStripMenuItem";
-            this.登录ToolStripMenuItem.Size = new System.Drawing.Size(113, 24);
-            this.登录ToolStripMenuItem.Text = "登录视频网站";
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.updateToolStripMenuItem});
+            this.refreshToolStripMenuItem.Enabled = false;
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
             this.refreshToolStripMenuItem.Size = new System.Drawing.Size(53, 24);
             this.refreshToolStripMenuItem.Text = "关于";
+            // 
+            // updateToolStripMenuItem
+            // 
+            this.updateToolStripMenuItem.Name = "updateToolStripMenuItem";
+            this.updateToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
+            this.updateToolStripMenuItem.Text = "软件更新";
             // 
             // tb_nick_name
             // 
@@ -155,19 +178,6 @@
             this.btn_refresh.UseVisualStyleBackColor = true;
             this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
             // 
-            // updateToolStripMenuItem
-            // 
-            this.updateToolStripMenuItem.Name = "updateToolStripMenuItem";
-            this.updateToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.updateToolStripMenuItem.Text = "软件更新";
-            // 
-            // BiliBiliToolStrip
-            // 
-            this.BiliBiliToolStrip.Name = "BiliBiliToolStrip";
-            this.BiliBiliToolStrip.Size = new System.Drawing.Size(224, 26);
-            this.BiliBiliToolStrip.Text = "哔哩哔哩";
-            this.BiliBiliToolStrip.Click += new System.EventHandler(this.BiliBiliToolStrip_Click);
-            // 
             // MainFrame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -208,6 +218,7 @@
         private System.Windows.Forms.Button btn_refresh;
         private System.Windows.Forms.ToolStripMenuItem updateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem BiliBiliToolStrip;
+        private System.Windows.Forms.ToolStripMenuItem ClearLoginStatusToolStripMenuItem;
     }
 }
 

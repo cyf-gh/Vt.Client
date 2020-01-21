@@ -19,9 +19,9 @@ namespace Vt.Client.WebController {
         public readonly string VideoUrl;
         private readonly String cookie;
 
-        public BrowserContoller( string videoUrl, string cookie )
+        public BrowserContoller( string videoUrl, string cookie, string webdriverLocation = "./external/webdriver", string chromeBinaryLocation = null )
         {
-            driver = new DriverHelper();
+            driver = new DriverHelper( webdriverLocation, chromeBinaryLocation );
             VideoUrl = videoUrl;
             this.cookie = cookie;
         }
@@ -85,15 +85,19 @@ namespace Vt.Client.WebController {
         /// <param name="cookie">默认值时尝试读取本地cookie</param>
         public void TryLogin()
         {
-            bool isLogin = this.cookie == "" ? canLoginFromLocalCookie() : canLoginFromStringCookie( cookie );
-            if ( !isLogin ) {
-                stLogger.Log( string.Format( "Local cookie login failed. Try to login in {0} seconds!", BrowserSettings.TimeOut ) );
-                driver.NavigateTo( "https://passport.bilibili.com/login" );
-                driver.WaitUntilTitleIs( "哔哩哔哩 (゜-゜)つロ 干杯~-bilibili" );
-                saveLoginCookie();
-            } else {
-                driver.Handle.Navigate().Refresh();
-                return;
+            try {
+                bool isLogin = cookie == "" ? canLoginFromLocalCookie() : canLoginFromStringCookie( cookie );
+                if ( !isLogin ) {
+                    stLogger.Log( string.Format( "Local cookie login failed. Try to login in {0} seconds!", BrowserSettings.TimeOut ) );
+                    driver.NavigateTo( "https://passport.bilibili.com/login" );
+                    driver.WaitUntilTitleIs( "哔哩哔哩 (゜-゜)つロ 干杯~-bilibili" );
+                    saveLoginCookie();
+                } else {
+                    driver.Handle.Navigate().Refresh();
+                    return;
+                }
+            } catch ( Exception ex ) {
+                throw ex;
             }
         }
         /// <summary>
@@ -193,7 +197,7 @@ namespace Vt.Client.WebController {
 
         public void Close()
         {
-            driver.Handle.Close();
+            driver.Handle.Quit();
         }
 
         public String LocalCookieFilePath()

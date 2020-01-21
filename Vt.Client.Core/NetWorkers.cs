@@ -23,7 +23,7 @@ namespace Vt.Client.Core {
             this.ipport = ipport;
         }
 
-        ProtocolMaker protocolMaker = new ProtocolMaker();
+        UdpProtocolMaker protocolMaker = new UdpProtocolMaker();
 
         private readonly IPPort ipport;
         private bool stopFlag = false;
@@ -33,9 +33,13 @@ namespace Vt.Client.Core {
 
         private void sendLocationPermantly()
         {
-            browserContoller.TryLogin();
-            browserContoller.GoToVideoPage();
-            Thread.Sleep( 3000 );
+            try {
+                browserContoller.TryLogin();
+                browserContoller.GoToVideoPage();
+                Thread.Sleep( 3000 );
+            } catch ( Exception ex ) {
+                stLogger.Log( "", ex );
+            }
 
             while ( !stopFlag ) {
                 try {

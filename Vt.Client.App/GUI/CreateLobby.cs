@@ -33,7 +33,7 @@ namespace Vt.Client.App {
             }
             try {
                 LobbyBorrower lobbyBorrower = new LobbyBorrower( Global.SelectedServer, tb_lobby_name.Text, tb_lbpswd.Text );
-                ProtocolMaker protocolMaker = new ProtocolMaker();
+                UdpProtocolMaker protocolMaker = new UdpProtocolMaker();
                 string responseFromLender = lobbyBorrower.Lend(
                     new YPM.Packager.ypmPackage( "create_lobby", new string[] {
                         tb_lobby_name.Text,

@@ -7,6 +7,7 @@ using stLib.Net.Haste;
 using System.IO;
 using stLib.Win32;
 using Vt.Client.WebController;
+using stLib.Log;
 
 namespace Vt.Client.App {
     public partial class MainFrame : Form {
@@ -64,6 +65,7 @@ namespace Vt.Client.App {
             // 关闭房间，清理资源
             // TcpClient_.SendMessage_ShortConnect( "", Global.SelectedServer );
             if ( result == DialogResult.OK ) {
+                Environment.Exit(0);
             } else {
                 e.Cancel = true;
             }
@@ -170,11 +172,26 @@ namespace Vt.Client.App {
                     File.WriteAllText( "./login/bilibili.json", "" );
                 }
             }
-            BrowserContoller c = new BrowserContoller( "", "" );
-            c.TryLogin();
+            BrowserContoller c = new BrowserContoller( "", "", Global.WebdriverDir, Global.ChromeBinPath );
+            try {
+                c.TryLogin();
+            } catch ( Exception ex ) {
+                stLogger.Log("",ex);
+            }
             c.Close();
             freshLoginStatus();
-            MessageBox.Show( File.Exists( "./login/bilibili.json" ) ? "登陆成功！" : "登录失败，未保存登录信息\n请重试", "登录状态" );
+            MessageBox.Show( File.ReadAllText( "./login/bilibili.json" ) != "" ? "登陆成功！" : "登录失败，未保存登录信息\n请重试", "登录状态" );
+        }
+
+        private void ClearLoginStatusToolStripMenuItem_Click( Object sender, EventArgs e )
+        {
+            DialogResult result = MessageBox.Show( "清空登陆状态？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Information );
+            if ( result == DialogResult.Cancel ) {
+                return;
+            } else {
+                File.WriteAllText( "./login/bilibili.json", "" );
+                freshLoginStatus();
+            }
         }
     }
 }

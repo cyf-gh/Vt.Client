@@ -27,9 +27,15 @@ namespace Vt.Client.WebController {
         public IWebDriver Handle { get; set; }
         public IWindow Window { get; set; }
         WebDriverWait wait;
-        public DriverHelper()
+        public DriverHelper( string webdriverLocation = "./external/webdriver", string chromeBinaryLocation = null )
         {
-            Handle = new ChromeDriver();
+            var driverService = ChromeDriverService.CreateDefaultService( webdriverLocation );
+            driverService.HideCommandPromptWindow = true;
+            var ops = new ChromeOptions();
+            if ( !string.IsNullOrEmpty( chromeBinaryLocation ) ) {
+                ops.BinaryLocation = chromeBinaryLocation;
+            }
+            Handle = new ChromeDriver( driverService, ops );
             Handle.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds( BrowserSettings.TimeOut );
             Window = Handle.Manage().Window;
             wait = new WebDriverWait( Handle, new TimeSpan( 0, 0, BrowserSettings.TimeOut ) );
@@ -44,7 +50,7 @@ namespace Vt.Client.WebController {
         }
         public void WaitUntilTitleIs( string title )
         {
-            wait.Until( c => { return Handle.Title == ( title ); } );
+            wait.Until( c => { return c == null ? false : c.Title == ( title ); } );
         }
         public T RunJS<T>( string JsCode, string elemXPath )
         {

@@ -9,6 +9,9 @@ using Vt.Client.WebController;
 using stLib.Log;
 using stLib.Win32;
 using System.Runtime.InteropServices;
+using IniParser.Parser;
+using IniParser.Model;
+using IniParser;
 
 namespace Vt.Client.App {
     static class Program {
@@ -20,7 +23,7 @@ namespace Vt.Client.App {
 
         static void LoadUserInfo()
         {
-            var userName = File.ReadAllText( "./user.cfg" );
+            var userName = File.ReadAllText( "./config/user.cfg" );
             Global.MyName = userName;
         }
         /// <summary>
@@ -29,11 +32,15 @@ namespace Vt.Client.App {
         [STAThread]
         static void Main()
         {
-            ConsoleHelper.HideConsole();
+            var parser = new FileIniDataParser();
+            IniData data = parser.ReadFile( "./config/app.cfg" );
+
+            Global.IsDebugMod = data["dev"]["mode"] == "debug";
+            Global.ChromeBinPath = data["web"]["chrome_bin"] == "def" ? "" : data["web"]["chrome_bin"];
+            Global.WebdriverDir = data["web"]["webdriver_dir"];
+
             // 检查是否为调试模式
-            if ( File.ReadAllText( "./.dev/debug.cfg" ) == "true" ) {
-                Global.IsDebugMod = true;
-            } else {
+            if ( !Global.IsDebugMod ) {
                 // 非调试模式情况下只允许程序运行一个实例
                 bool runone;
                 Mutex run = new Mutex( true, "___vt_client___", out runone );
@@ -42,6 +49,11 @@ namespace Vt.Client.App {
                 } else {
                     run.ReleaseMutex();
                 }
+            } else {
+                stLib.Common.Random rd = new stLib.Common.Random();
+                Global.MyName = "user" + rd.GetInt32().ToString();
+                WinformConsoleHelper.AllocConsole();
+                Console.WriteLine( "DEBUG MODE ON" );
             }
 
             stLogger.Init();
@@ -52,13 +64,6 @@ namespace Vt.Client.App {
                 stLogger.Log( ex.ToString() );
                 MessageBox.Show( ex.Message );
                 Application.Exit();
-            }
-
-            if ( Global.IsDebugMod ) {
-                stLib.Common.Random rd = new stLib.Common.Random();
-                Global.MyName = "debug" + rd.GetInt32().ToString();
-                ConsoleHelper.ShowConsole();
-                Console.WriteLine( "DEBUG MODE ON" );
             }
 
             Application.EnableVisualStyles();

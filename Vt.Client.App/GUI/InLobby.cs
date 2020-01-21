@@ -35,7 +35,7 @@ namespace Vt.Client.App {
             if ( !isHost ) {
                 bt_start.Enabled = false;
                 bt_start.Text = "Waiting Host";
-                browserContoller = new BrowserContoller( tb_video_url.Text, cookie );
+                browserContoller = new BrowserContoller( tb_video_url.Text, cookie, Global.WebdriverDir, Global.ChromeBinPath );
 
                 syncWorker = new SyncWorker( Global.MyName, browserContoller, Global.SelectedServer );
                 syncWorker.Do();
@@ -94,15 +94,10 @@ namespace Vt.Client.App {
 
         }
 
-        private void bt_refresh_Click( Object sender, EventArgs e )
-        {
-
-        }
-
         private void bt_start_Click( Object sender, EventArgs e )
         {
             try {
-                browserContoller = new BrowserContoller( tb_video_url.Text, cookie );
+                browserContoller = new BrowserContoller( tb_video_url.Text, cookie, Global.WebdriverDir, Global.ChromeBinPath );
 
                 syncWorker = new SyncWorker( Global.MyName, browserContoller, Global.SelectedServer );
                 syncWorker.Do();

@@ -27,7 +27,6 @@
         {
             this.tb_lobby_name = new System.Windows.Forms.TextBox();
             this.lobby_name = new System.Windows.Forms.Label();
-            this.lb_server_info = new System.Windows.Forms.Label();
             this.btn_create_lobby = new System.Windows.Forms.Button();
             this.ddd_maxOffset = new System.Windows.Forms.DomainUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -54,22 +53,13 @@
             this.lobby_name.AutoSize = true;
             this.lobby_name.Location = new System.Drawing.Point(3, 12);
             this.lobby_name.Name = "lobby_name";
-            this.lobby_name.Size = new System.Drawing.Size(84, 19);
+            this.lobby_name.Size = new System.Drawing.Size(67, 15);
             this.lobby_name.TabIndex = 1;
             this.lobby_name.Text = "房间名：";
             // 
-            // lb_server_info
-            // 
-            this.lb_server_info.AutoSize = true;
-            this.lb_server_info.Location = new System.Drawing.Point(8, 140);
-            this.lb_server_info.Name = "lb_server_info";
-            this.lb_server_info.Size = new System.Drawing.Size(79, 15);
-            this.lb_server_info.TabIndex = 3;
-            this.lb_server_info.Text = "Servers :";
-            // 
             // btn_create_lobby
             // 
-            this.btn_create_lobby.Location = new System.Drawing.Point(462, 202);
+            this.btn_create_lobby.Location = new System.Drawing.Point(462, 130);
             this.btn_create_lobby.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btn_create_lobby.Name = "btn_create_lobby";
             this.btn_create_lobby.Size = new System.Drawing.Size(91, 32);
@@ -80,6 +70,7 @@
             // 
             // ddd_maxOffset
             // 
+            this.ddd_maxOffset.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.ddd_maxOffset.Items.Add("5");
             this.ddd_maxOffset.Items.Add("4");
             this.ddd_maxOffset.Items.Add("3");
@@ -87,7 +78,7 @@
             this.ddd_maxOffset.Location = new System.Drawing.Point(149, 100);
             this.ddd_maxOffset.Name = "ddd_maxOffset";
             this.ddd_maxOffset.Size = new System.Drawing.Size(51, 25);
-            this.ddd_maxOffset.TabIndex = 5;
+            this.ddd_maxOffset.TabIndex = 1;
             this.ddd_maxOffset.Text = "2";
             this.ddd_maxOffset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -96,7 +87,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 42);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(65, 19);
+            this.label1.Size = new System.Drawing.Size(52, 15);
             this.label1.TabIndex = 1;
             this.label1.Text = "密码：";
             // 
@@ -115,7 +106,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 102);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(178, 19);
+            this.label2.Size = new System.Drawing.Size(142, 15);
             this.label2.TabIndex = 1;
             this.label2.Text = "最大可接受同步偏差";
             // 
@@ -133,7 +124,7 @@
             this.lb_video_url.AutoSize = true;
             this.lb_video_url.Location = new System.Drawing.Point(3, 72);
             this.lb_video_url.Name = "lb_video_url";
-            this.lb_video_url.Size = new System.Drawing.Size(95, 19);
+            this.lb_video_url.Size = new System.Drawing.Size(76, 15);
             this.lb_video_url.TabIndex = 7;
             this.lb_video_url.Text = "视频URL：";
             this.lb_video_url.Click += new System.EventHandler(this.lb_video_url_Click);
@@ -155,7 +146,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(206, 102);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(28, 19);
+            this.label3.Size = new System.Drawing.Size(22, 15);
             this.label3.TabIndex = 1;
             this.label3.Text = "秒";
             // 
@@ -163,13 +154,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(565, 245);
+            this.ClientSize = new System.Drawing.Size(565, 175);
             this.Controls.Add(this.cb_is_share_cookie);
             this.Controls.Add(this.lb_video_url);
             this.Controls.Add(this.tb_url);
             this.Controls.Add(this.ddd_maxOffset);
             this.Controls.Add(this.btn_create_lobby);
-            this.Controls.Add(this.lb_server_info);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -191,7 +181,6 @@
 
         private System.Windows.Forms.TextBox tb_lobby_name;
         private System.Windows.Forms.Label lobby_name;
-        private System.Windows.Forms.Label lb_server_info;
         private System.Windows.Forms.Button btn_create_lobby;
         private System.Windows.Forms.DomainUpDown ddd_maxOffset;
         private System.Windows.Forms.Label label1;
