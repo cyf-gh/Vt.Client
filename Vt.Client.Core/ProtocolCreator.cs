@@ -9,9 +9,9 @@ namespace Vt.Client.Core
 {
     public class UdpProtocolMaker
     {
-        public string MakePackageMsg(string name, string currentLocation, bool isPause) 
+        public string MakePackageMsg(string lobbyName, string name, string currentLocation, bool isPause) 
         {
-            return string.Format("{0},{1},{2}", name, currentLocation, isPause? "p": "s");
+            return string.Format("{0},{1},{2},{3}", lobbyName, name, currentLocation, isPause? "p": "s");
         }
     }
 }

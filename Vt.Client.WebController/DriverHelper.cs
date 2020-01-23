@@ -36,13 +36,31 @@ namespace Vt.Client.WebController {
                 ops.BinaryLocation = chromeBinaryLocation;
             }
             Handle = new ChromeDriver( driverService, ops );
-            Handle.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds( BrowserSettings.TimeOut );
+            // Handle.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds( BrowserSettings.TimeOut );
             Window = Handle.Manage().Window;
             wait = new WebDriverWait( Handle, new TimeSpan( 0, 0, BrowserSettings.TimeOut ) );
         }
         public IWebElement FindElementByXPath( string xpath )
         {
             return wait.Until( c => { return Handle.FindElement( By.XPath( xpath ) ); } );
+        }
+
+        public IWebElement FindElementByXPathDoNotWait( string xpath )
+        {
+            try {
+                return Handle.FindElement( By.XPath( xpath ) );
+            } catch ( Exception ) {
+                return null;
+            }
+        }
+
+        public void DeleteElementByXPath( string xpath )
+        {
+            if ( FindElementByXPathDoNotWait( xpath ) != null ) {
+                RunJS<string>(
+                    " arguments[0].parentNode.removeChild( arguments[0] ); ",
+                    xpath );
+            }
         }
         public void NavigateTo( string url )
         {

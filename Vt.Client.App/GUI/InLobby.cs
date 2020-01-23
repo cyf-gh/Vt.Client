@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Vt.Client.WebController;
 using stLib.Log;
 using Vt.Client.Core;
+using System.Collections.Generic;
 
 namespace Vt.Client.App {
     public partial class InLobby : Form {
@@ -37,7 +38,7 @@ namespace Vt.Client.App {
                 bt_start.Text = "Waiting Host";
                 browserContoller = new BrowserContoller( GetVideoGenre(), tb_video_url.Text, cookie, Global.WebdriverDir, Global.ChromeBinPath );
 
-                syncWorker = new SyncWorker( Global.MyName, browserContoller, Global.SelectedServer );
+                syncWorker = new SyncWorker( lobbyName, Global.MyName, browserContoller, Global.SelectedServer );
                 syncWorker.Do();
             }
         }
@@ -64,8 +65,8 @@ namespace Vt.Client.App {
             if ( result == DialogResult.OK ) {
                 Global.IsInLobby = false;
                 try {
-                    browserContoller.Close();
-                    syncWorker.Stop();
+                    if ( browserContoller != null ) browserContoller.Close();
+                    if ( syncWorker != null ) syncWorker.Stop();
                     bgw_viewers_syncer.CancelAsync();
                     if ( isHost ) {
                         borrower.Return();
@@ -84,8 +85,14 @@ namespace Vt.Client.App {
 
         private void freshViewerList()
         {
+            List<string> lobs = new List<string>();
             lb_viewerList.Items.Clear();
-            var lobs = borrower.QueryViewers();
+            try {
+                lobs = borrower.QueryViewers();
+            } catch ( Exception ex ) {
+                stLogger.Log(ex);
+            }
+            if ( lobs.Count == 0 ) return;
             foreach ( var l in lobs ) {
                 lb_viewerList.Items.Add( l );
             }
@@ -93,9 +100,9 @@ namespace Vt.Client.App {
 
         private void bgw_viewers_syncer_DoWork( Object sender, DoWorkEventArgs e )
         {
+            MyInvoke mi = new MyInvoke( freshViewerList );
             while ( true ) {
                 Thread.Sleep( 1000 );
-                MyInvoke mi = new MyInvoke( freshViewerList );
                 BeginInvoke( mi );
             }
         }
@@ -112,7 +119,7 @@ namespace Vt.Client.App {
                 if ( syncWorker != null ) {
                     return;
                 }
-                syncWorker = new SyncWorker( Global.MyName, browserContoller, Global.SelectedServer );
+                syncWorker = new SyncWorker( lobbyName, Global.MyName, browserContoller, Global.SelectedServer );
                 syncWorker.Do();
             } catch ( Exception ex ) {
                 stLogger.Log( "", ex );

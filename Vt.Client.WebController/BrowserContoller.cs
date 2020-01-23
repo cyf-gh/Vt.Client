@@ -37,6 +37,7 @@ namespace Vt.Client.WebController {
             switch ( genre ) {
                 case BiliVideoGenre.BANGUMI:
                     XPathTimeLocation = "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[3]/div/span[1]";
+
                     XPathTimeLocationInput = "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[3]/input";
                     break;
                 case BiliVideoGenre.VIDEO:
@@ -200,6 +201,29 @@ namespace Vt.Client.WebController {
                 );
         }
 
+        public void TryClearUnusedElements()
+        {
+            try {
+                // 删除所有的高能进度条页面阻挡
+                driver.DeleteElementByXPath( "//*[@id=\"bilibili_pbp\"]" );
+                driver.DeleteElementByXPath( "//*[@id=\"bilibili_pbp_pin\"]" );
+                driver.DeleteElementByXPath( "//*[@id=\"bilibili_pbp_panel\"]" );
+                // 删除所有冗余信息
+                driver.DeleteElementByXPath( "//*[@id=\"recom_module\"]" );
+                driver.DeleteElementByXPath( "//*[@id=\"seasonlist_module\"]" );
+                driver.DeleteElementByXPath( "//*[@id=\"bili-header-m\"]" );
+
+                driver.DeleteElementByXPath( "//*[@id=\"internationalHeader\"]" );
+                driver.DeleteElementByXPath( "//*[@id=\"reco_list\"]" );
+
+                driver.DeleteElementByXPath( "//*[@id=\"slide_ad\"]" );
+                driver.DeleteElementByXPath( "//*[@id=\"right-bottom-banner\"]" );
+                driver.DeleteElementByXPath( "//*[@id=\"live_recommand_report\"]" );
+            } catch ( Exception ) {
+                return;
+            }
+        }
+
         public void ShowVideoControl()
         {
             driver.RunJS<string>(
@@ -214,8 +238,6 @@ namespace Vt.Client.WebController {
                 "arguments[0].className = 'bilibili-player-area video-state-blackside'",
                 "//*[@id=\"bilibiliPlayer\"]/div[1]"
                 );
-
-            //
         }
 
         public void Close()

@@ -50,20 +50,19 @@ namespace Vt.Client.App {
                     run.ReleaseMutex();
                 }
             } else {
+                stLogger.Init();
+                try {
+                    LoadServerInfo();
+                    LoadUserInfo();
+                } catch ( Exception ex ) {
+                    stLogger.Log( ex.ToString() );
+                    MessageBox.Show( ex.Message );
+                    Application.Exit();
+                }
                 stLib.Common.Random rd = new stLib.Common.Random();
                 Global.MyName = "user" + rd.GetInt32().ToString();
                 WinformConsoleHelper.AllocConsole();
                 Console.WriteLine( "DEBUG MODE ON" );
-            }
-
-            stLogger.Init();
-            try {
-                LoadServerInfo();
-                LoadUserInfo();
-            } catch ( Exception ex ) {
-                stLogger.Log( ex.ToString() );
-                MessageBox.Show( ex.Message );
-                Application.Exit();
             }
 
             Application.EnableVisualStyles();

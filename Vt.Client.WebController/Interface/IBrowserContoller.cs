@@ -17,5 +17,6 @@
         void TryLogin();
 
         string LocalCookieFilePath();
+        void TryClearUnusedElements();
     }
 }

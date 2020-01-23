@@ -15,8 +15,9 @@ using YPM.Packager;
 
 namespace Vt.Client.Core {
     public class SyncWorker {
-        public SyncWorker( string nickName, IBrowserContoller browserContoller, IPPort ipport )
+        public SyncWorker( string lobbyName, string nickName, IBrowserContoller browserContoller, IPPort ipport )
         {
+            this.lobbyName = lobbyName;
             this.nickName = nickName;
             this.browserContoller = browserContoller;
             this.synccer = new UdpClient_();
@@ -28,6 +29,7 @@ namespace Vt.Client.Core {
         private readonly IPPort ipport;
         private bool stopFlag = false;
         private readonly UdpClient_ synccer;
+        private readonly String lobbyName;
         private readonly String nickName;
         private readonly IBrowserContoller browserContoller;
 
@@ -37,16 +39,17 @@ namespace Vt.Client.Core {
                 browserContoller.TryLogin();
                 browserContoller.GoToVideoPage();
                 Thread.Sleep( 3000 );
+                browserContoller.TryClearUnusedElements();
             } catch ( Exception ex ) {
-                stLogger.Log( "", ex );
+                stLogger.Log( ex );
             }
-
             while ( !stopFlag ) {
                 try {
                     Console.WriteLine( browserContoller.GetCurrentLocationText() );
                     Thread.Sleep( 900 );
                     var recv = synccer.SendMessage(
                         protocolMaker.MakePackageMsg(
+                            lobbyName,
                             nickName,
                             browserContoller.GetCurrentLocationText(),
                             browserContoller.IsPause() )
@@ -63,6 +66,7 @@ namespace Vt.Client.Core {
                             continue;
                         default:
                             if ( recv.Contains( ":" ) ) {
+
                                 browserContoller.ShowVideoControl();
                                 browserContoller.LocateVideoBasic( recv );
                                 browserContoller.HideVideoControl();
@@ -70,7 +74,7 @@ namespace Vt.Client.Core {
                             continue;
                     }
                 } catch ( Exception ex ) {
-                    Console.WriteLine( ex );
+                    stLogger.Log( "In sendLocationPermantly", ex );
                     continue;
                 }
             }
