@@ -12,16 +12,17 @@ using stLib.Log;
 using stLib.Net;
 using Vt.Client.WebController;
 using YPM.Packager;
+using stLib.Excep;
 
 namespace Vt.Client.Core {
     public class SyncWorker {
-        public SyncWorker( string lobbyName, string nickName, IBrowserContoller browserContoller, IPPort ipport )
+        public SyncWorker( string nickName, BrowserContoller browserContoller, LobbyBorrower b, IPPort ipport )
         {
-            this.lobbyName = lobbyName;
+            lobbyName = b.LobbyName;
             this.nickName = nickName;
-            this.browserContoller = browserContoller;
-            this.synccer = new UdpClient_();
-
+            this.bc = browserContoller;
+            this.b = b;
+            this.syn = new UdpClient_();
             this.ipport = ipport;
         }
 
@@ -29,62 +30,88 @@ namespace Vt.Client.Core {
 
         private readonly IPPort ipport;
         private bool stopFlag = false;
-        private readonly UdpClient_ synccer;
+        private readonly UdpClient_ syn;
         private readonly String lobbyName;
         private readonly String nickName;
-        private readonly IBrowserContoller browserContoller;
+        private readonly BrowserContoller bc;
+        private readonly LobbyBorrower b;
 
-        private void sendLocationPermantly()
+        private void syncVideoMode()
         {
+            bc.BringToScreen();
+            while ( !stopFlag ) {
+                if ( bc.GetVideoGenre() == BiliVideoGenre.UNKNOWN ) {
+                    return;
+                }
+                Thread.Sleep( 900 );
+                ExcepHelper.LogOnly( updateLobbyInfo, "in sendLocationPermantly" );
+                ExcepHelper.LogOnly( processVideoSync, "in sendLocationPermantly" );
+            }
+        }
+
+        public void NavToVideoUrl()
+        {
+            bc.GoToVideoPage();
+            Thread.Sleep( 3000 );
+            bc.TryClearUnusedElements();
+            bc.CreateLobbyInfo();
+        }
+        public void updateLobbyInfo()
+        {
+            List<string> lobs = new List<string>();
             try {
-                browserContoller.TryLogin();
-                browserContoller.GoToVideoPage();
-                Thread.Sleep( 3000 );
-                browserContoller.TryClearUnusedElements();
+                lobs = b.QueryViewers();
+                lobs.Insert( 0, lobbyName );
             } catch ( Exception ex ) {
                 stLogger.Log( ex );
             }
-            while ( !stopFlag ) {
-                try {
-                    Console.WriteLine( browserContoller.GetCurrentLocationText() );
-                    Thread.Sleep( 900 );
-                    var recv = synccer.SendMessage(
-                        protocolMaker.MakePackageMsg(
-                            lobbyName,
-                            nickName,
-                            browserContoller.GetCurrentLocationText(),
-                            browserContoller.IsPause() )
-                        , ipport );
-                    Console.WriteLine( recv );
-                    switch ( recv ) {
-                        case "OK":
-                            continue;
-                        case "p":
-                            browserContoller.Pause();
-                            continue;
-                        case "s":
-                            browserContoller.Play();
-                            continue;
-                        default:
-                            if ( recv.Contains( ":" ) ) {
-                                browserContoller.ShowVideoControl();
-                                browserContoller.LocateVideoBasic( recv );
-                                browserContoller.HideVideoControl();
-                            }
-                            continue;
-                    }
-                } catch ( Exception ex ) {
-                    stLogger.Log( "In sendLocationPermantly", ex );
-                    continue;
-                }
+            //foreach ( var l in lobs )  bc.Log(l);
+            bc.UpdateLobbyStatus( lobs );
+        }
+
+        public void processVideoSync()
+        {
+            bool isUrlChanged = bc.IsUrlChanged();
+
+            var recv = syn.SendMessage(
+            protocolMaker.MakePackageMsg(
+                lobbyName,
+                nickName,
+                isUrlChanged ? "00:00" : bc.GetCurrentLocationText(),
+                isUrlChanged ? true : bc.IsPause(),
+                bc.VideoUrl )
+            , ipport );
+
+            if ( isUrlChanged ) {
+                NavToVideoUrl();
+                return;
+            }
+
+            Console.WriteLine( recv );
+            switch ( recv ) {
+                case "OK": return;
+                case "p": bc.Pause(); return;
+                case "s": bc.Play(); return;
+            }
+            if ( recv.Contains( "http" ) ) {
+                bc.VideoUrl = recv;
+                NavToVideoUrl();
+                return;
+            }
+            if ( recv.Contains( ":" ) ) {
+                bc.ShowVideoControl();
+                bc.LocateVideoBasic( recv );
+                bc.HideVideoControl();
+                return;
             }
         }
+
         public Task SyncHandle { get; set; } = null;
         public void Do()
         {
             TaskFactory taskFactory = new TaskFactory();
             stopFlag = false;
-            SyncHandle = taskFactory.StartNew( sendLocationPermantly );
+            SyncHandle = taskFactory.StartNew( syncVideoMode );
         }
 
         public void Resume()
@@ -107,11 +134,10 @@ namespace Vt.Client.Core {
 
     public class LobbyBorrower {
         private readonly IPPort ipport;
-        public LobbyBorrower( IPPort ipport, string lobbyName, string lobbyPassword )
+        public LobbyBorrower( IPPort ipport, string lobbyName )
         {
             this.ipport = ipport;
             LobbyName = lobbyName;
-            LobbyPassword = lobbyPassword;
             LobbyName = lobbyName;
             udpClient = new UdpClient_();
         }
@@ -119,8 +145,6 @@ namespace Vt.Client.Core {
         public String LobbyName { get; }
 
         private UdpClient_ udpClient;
-
-        public String LobbyPassword { get; }
 
         public string Lend( string msg )
         {
@@ -155,11 +179,11 @@ namespace Vt.Client.Core {
         public string Leave( string myName )
         {
             try {
-                return TcpClient_.SendMessage_ShortConnect( 
+                return TcpClient_.SendMessage_ShortConnect(
                     new ypmPackage( "exit_lobby",
                                     new string[] {
                                         myName, LobbyName
-                                    }).ToString()
+                                    } ).ToString()
                     , ipport );
             } catch ( Exception ex ) {
                 stLogger.Log( ex.ToString() );

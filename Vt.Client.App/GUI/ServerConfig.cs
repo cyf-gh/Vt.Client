@@ -17,7 +17,7 @@ namespace Vt.Client.App {
 
         private void ServerConfig_Load( Object sender, EventArgs e )
         {
-            this.lb_server.DataSource = Global.ServerInfos;
+            this.lb_server.DataSource = G.ServerInfos;
             lb_server.DisplayMember = "IP";
         }
 
@@ -28,8 +28,8 @@ namespace Vt.Client.App {
 
         private void lb_server_DoubleClick( Object sender, EventArgs e )
         {
-            Global.SelectedServer = Global.ServerInfos[lb_server.SelectedIndex];
-            MessageBox.Show( "已切换为\n" + Global.SelectedServer.IP, "服务器设置" );
+            G.SelectedServer = G.ServerInfos[lb_server.SelectedIndex];
+            MessageBox.Show( "已切换为\n" + G.SelectedServer.IP, "服务器设置" );
             this.Close();
         }
     }

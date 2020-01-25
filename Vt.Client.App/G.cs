@@ -1,9 +1,11 @@
 ﻿using stLib.Net;
 using System.Collections.Generic;
 using System.IO;
+using Vt.Client.Core;
+using Vt.Client.WebController;
 
 namespace Vt.Client.App {
-    public static class Global {
+    public static class G {
         public static string MyName { get; set; }
 
         public static List<IPPort> ServerInfos { get; set; }
@@ -15,5 +17,7 @@ namespace Vt.Client.App {
 
         public static string ChromeBinPath { get; set; } = "";
         public static string WebdriverDir { get; set; } = "";
+
+        public static Lobby Lobby { get; set; } = new Lobby();
     }
 }

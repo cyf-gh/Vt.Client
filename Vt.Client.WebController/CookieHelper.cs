@@ -7,6 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Vt.Client.WebController {
+    /// <summary>
+    /// Selenium提供的Cookie无法直接从json反序列化的对象构造，故创建一个中间对象
+    /// </summary>
     class CookieTmp {
         public bool Secure { get; set; }
         public bool IsHttpOnly { get; set; }

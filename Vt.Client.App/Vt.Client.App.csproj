@@ -70,13 +70,7 @@
     <Compile Include="GUI\CreateLobby.Designer.cs">
       <DependentUpon>CreateLobby.cs</DependentUpon>
     </Compile>
-    <Compile Include="Global.cs" />
-    <Compile Include="GUI\InLobby.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GUI\InLobby.Designer.cs">
-      <DependentUpon>InLobby.cs</DependentUpon>
-    </Compile>
+    <Compile Include="G.cs" />
     <Compile Include="GUI\InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,11 +91,9 @@
     <Compile Include="GUI\ServerConfig.Designer.cs">
       <DependentUpon>ServerConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="Lobby.cs" />
     <EmbeddedResource Include="GUI\CreateLobby.resx">
       <DependentUpon>CreateLobby.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\InLobby.resx">
-      <DependentUpon>InLobby.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\InputBox.resx">
       <DependentUpon>InputBox.cs</DependentUpon>

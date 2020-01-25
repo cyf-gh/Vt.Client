@@ -18,12 +18,12 @@ namespace Vt.Client.App {
 
         void freshServerStatus()
         {
-            Text = "服务器信息：" + Global.SelectedServer?.Readable();
+            Text = "服务器信息：" + G.SelectedServer?.Readable();
         }
 
         private async void MainFrame_Load( Object sender, EventArgs e )
         {
-            tb_nick_name.Text = Global.MyName;
+            tb_nick_name.Text = G.MyName;
 
             freshLoginStatus();
             freshServerStatus();
@@ -56,7 +56,7 @@ namespace Vt.Client.App {
 
         private void tb_nickname_TextChange( Object sender, EventArgs e )
         {
-            Global.MyName = tb_nick_name.Text;
+            G.MyName = tb_nick_name.Text;
         }
 
         private void MainFrame_FormClosing( Object sender, FormClosingEventArgs e )
@@ -84,7 +84,7 @@ namespace Vt.Client.App {
             Cursor = Cursors.WaitCursor;
             var lobs = await Task.Run( () => {
                 try {
-                    return StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "query_lobbies@", Global.SelectedServer ) );
+                    return StringHelper.ParseComData( TcpClient_.SendMessage_ShortConnect( "query_lobbies@", G.SelectedServer ) );
                 } catch ( Exception ex ) {
                     MessageBox.Show( ex.Message );
                     return null;
@@ -106,7 +106,7 @@ namespace Vt.Client.App {
 
         private void lb_lobs_DoubleClick( Object sender, EventArgs e )
         {
-            if ( Global.IsInLobby ) {
+            if ( G.IsInLobby ) {
                 MessageBox.Show( "您已在房间中，不能同时加入多个房间" );
                 return;
             }
@@ -140,8 +140,8 @@ namespace Vt.Client.App {
             bool ok = await Task.Run( () => {
                 try {
                     UdpClient_ udpClient_ = new UdpClient_();
-                    string tcpRe = TcpClient_.SendMessage_ShortConnect( "ping@", Global.SelectedServer );
-                    string udpRe = udpClient_.SendMessage( "ping@", Global.SelectedServer );
+                    string tcpRe = TcpClient_.SendMessage_ShortConnect( "ping@", G.SelectedServer );
+                    string udpRe = udpClient_.SendMessage( "ping@", G.SelectedServer );
                     if ( tcpRe == "OK" && udpRe == "OK" ) {
                         return true;
                     }
@@ -152,7 +152,7 @@ namespace Vt.Client.App {
                 }
             } );
             if ( ok ) {
-                MessageBox.Show( "OK", Global.SelectedServer.Readable());
+                MessageBox.Show( "OK", G.SelectedServer.Readable());
             }
             Cursor = Cursors.Default;
         }
@@ -172,13 +172,12 @@ namespace Vt.Client.App {
                     File.WriteAllText( "./login/bilibili.json", "" );
                 }
             }
-            BrowserContoller c = new BrowserContoller( BiliVideoGenre.UNKNOWN, "", "", Global.WebdriverDir, Global.ChromeBinPath );
             try {
-                c.TryLogin();
+                G.Lobby.BC.TryLogin();
             } catch ( Exception ex ) {
                 stLogger.Log("",ex);
             }
-            c.Close();
+            G.Lobby.BC.Close();
             freshLoginStatus();
             MessageBox.Show( File.ReadAllText( "./login/bilibili.json" ) != "" ? "登陆成功！" : "登录失败，未保存登录信息\n请重试", "登录状态" );
         }
@@ -192,6 +191,11 @@ namespace Vt.Client.App {
                 File.WriteAllText( "./login/bilibili.json", "" );
                 freshLoginStatus();
             }
+        }
+
+        private void version_btn_Click( Object sender, EventArgs e )
+        {
+            MessageBox.Show("0.0.1b2","版本");
         }
     }
 }

@@ -19,6 +19,8 @@ namespace Vt.Client.App {
         private void btn_create_lobby_Click( Object sender, EventArgs e )
         {
             Cursor = Cursors.WaitCursor;
+            this.Text = "创建中...";
+            this.Enabled = false;
             if ( tb_lbpswd.Text == "" ) {
                 MessageBox.Show( "Fatal", "Password must be not empty." );
                 Cursor = Cursors.Default;
@@ -27,28 +29,22 @@ namespace Vt.Client.App {
 
             if ( cb_is_share_cookie.Checked ) {
                 if ( File.ReadAllText( "./login/bilibili.json" ) == "" ) {
-                    MessageBox.Show("未找到登录的本地信息\n您还未登录bilibili，请回到主界面的登陆选项登录\n或取消共享登录状态的选项");
+                    MessageBox.Show( "未找到登录的本地信息\n您还未登录bilibili，请回到主界面的登陆选项登录\n或取消共享登录状态的选项" );
                     return;
                 }
             }
+
             try {
-                LobbyBorrower lobbyBorrower = new LobbyBorrower( Global.SelectedServer, tb_lobby_name.Text, tb_lbpswd.Text );
-                UdpProtocolMaker protocolMaker = new UdpProtocolMaker();
-                string responseFromLender = lobbyBorrower.Lend(
-                    new YPM.Packager.ypmPackage( "create_lobby", new string[] {
-                        tb_lobby_name.Text,
-                        tb_lbpswd.Text,
-                        ddd_maxOffset.Items[ddd_maxOffset.SelectedIndex].ToString(),
-                        Global.MyName,
-                        tb_url.Text,
-                        cb_is_share_cookie.Checked ? CookieHelper.GetLocalCookieString( "./login/bilibili.json" ) : "no"
-                    } ).ToString() );
-                switch ( responseFromLender ) {
+                switch ( G.Lobby.Start(
+                            tb_lobby_name.Text,
+                            cb_is_share_cookie.Checked ? CookieHelper.GetLocalCookieString( "./login/bilibili.json" ) : "",
+                            tb_url.Text,
+                            tb_lbpswd.Text,
+                            ddd_maxOffset.Items[ddd_maxOffset.SelectedIndex].ToString(),
+                            true
+                        ) ) {
                     case "OK": {
-                        MessageBox.Show( "创建成功！" );
-                        InLobby inLobby = new InLobby( true, tb_lobby_name.Text, "", tb_url.Text, lobbyBorrower );
                         Close();
-                        inLobby.ShowDialog();
                         break;
                     }
                     case "LOBBY_ALREADY_EXISTS": {
@@ -63,6 +59,7 @@ namespace Vt.Client.App {
             } catch ( Exception ex ) {
                 MessageBox.Show( ex.Message );
             }
+            this.Enabled = true;
             Cursor = Cursors.Default;
         }
 
@@ -70,7 +67,7 @@ namespace Vt.Client.App {
         {
             stLib.Common.Random rd = new stLib.Common.Random();
             tb_lobby_name.Text = "Lobby" + rd.GetInt32().ToString();
-            Text = Global.SelectedServer.Readable(); 
+            Text = G.SelectedServer.Readable();
             ddd_maxOffset.SelectedIndex = 0;
         }
 

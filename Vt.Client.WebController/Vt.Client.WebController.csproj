@@ -65,7 +65,6 @@
     <Compile Include="BrowserContoller.cs" />
     <Compile Include="CookieHelper.cs" />
     <Compile Include="DriverHelper.cs" />
-    <Compile Include="Interface\IBrowserContoller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

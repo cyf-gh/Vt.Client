@@ -13,10 +13,8 @@ namespace Vt.Client.WebController {
         VIDEO,
         UNKNOWN
     }
-    /// <summary>
-    /// Selenium提供的Cookie无法直接从json反序列化的对象构造，故创建一个中间对象
-    /// </summary>
-    public class BrowserContoller : IBrowserContoller {
+
+    public class BrowserContoller {
         DriverHelper driver;
         private readonly BiliVideoGenre genre;
         private readonly string XPathTimeLocation;
@@ -24,20 +22,41 @@ namespace Vt.Client.WebController {
         /// <summary>
         /// 视频地址
         /// </summary>
-        public readonly string VideoUrl;
+        public string VideoUrl { get; set; }
         private readonly String cookie;
 
-        public BrowserContoller( BiliVideoGenre genre, string videoUrl, string cookie, string webdriverLocation = "./external/webdriver", string chromeBinaryLocation = null )
+        public bool IsUrlChanged()
+        {
+            if ( VideoUrl != driver.Handle.Url ) {
+                VideoUrl = driver.Handle.Url;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public BiliVideoGenre GetVideoGenre()
+        {
+            if ( VideoUrl.Contains( "bilibili.com/bangumi" ) ) {
+                return BiliVideoGenre.BANGUMI;
+            }
+            if ( VideoUrl.Contains( "bilibili.com/video" ) ) {
+                return BiliVideoGenre.VIDEO;
+            }
+            return BiliVideoGenre.UNKNOWN;
+        }
+
+        public BrowserContoller( string videoUrl, string cookie, string webdriverLocation = "./external/webdriver", string chromeBinaryLocation = null )
         {
             driver = new DriverHelper( webdriverLocation, chromeBinaryLocation );
-            this.genre = genre;
+            Hide();
             VideoUrl = videoUrl;
+            this.genre = GetVideoGenre();
             this.cookie = cookie;
 
             switch ( genre ) {
                 case BiliVideoGenre.BANGUMI:
                     XPathTimeLocation = "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[3]/div/span[1]";
-
                     XPathTimeLocationInput = "//*[@id=\"bilibiliPlayer\"]/div[1]/div[1]/div[10]/div[2]/div[2]/div[1]/div[3]/input";
                     break;
                 case BiliVideoGenre.VIDEO:
@@ -47,6 +66,16 @@ namespace Vt.Client.WebController {
                 default:
                     break;
             }
+        }
+
+        public void Hide()
+        {
+            driver.Window.Position = new System.Drawing.Point( -10000, 0 );
+        }
+
+        public void BringToScreen()
+        {
+            driver.Window.Position = new System.Drawing.Point( 0, 0 );
         }
 
         bool FeedCookieString( string cookie )
@@ -113,7 +142,9 @@ namespace Vt.Client.WebController {
                 if ( !isLogin ) {
                     stLogger.Log( string.Format( "Local cookie login failed. Try to login in {0} seconds!", BrowserSettings.TimeOut ) );
                     driver.NavigateTo( "https://passport.bilibili.com/login" );
+                    BringToScreen();
                     driver.WaitUntilTitleIs( "哔哩哔哩 (゜-゜)つロ 干杯~-bilibili" );
+                    Hide();
                     saveLoginCookie();
                 } else {
                     driver.Handle.Navigate().Refresh();
@@ -185,6 +216,10 @@ namespace Vt.Client.WebController {
             Thread.Sleep( 2000 ); // 稍微等待视频缓冲
         }
 
+        public void Log( string msg )
+        {
+            driver.ConsoleLog( msg );
+        }
         /// <summary>
         /// 获取即时的视频时间位置，
         /// </summary>
@@ -200,7 +235,7 @@ namespace Vt.Client.WebController {
                 XPathTimeLocation
                 );
         }
-            
+
         public void TryClearUnusedElements()
         {
             try {
@@ -208,20 +243,45 @@ namespace Vt.Client.WebController {
                 driver.DeleteElementByXPath( "//*[@id=\"bilibili_pbp\"]" );
                 driver.DeleteElementByXPath( "//*[@id=\"bilibili_pbp_pin\"]" );
                 driver.DeleteElementByXPath( "//*[@id=\"bilibili_pbp_panel\"]" );
+                driver.ConsoleLog( "成功删除高能进度条" );
                 // 删除所有冗余信息
                 driver.DeleteElementByXPath( "//*[@id=\"recom_module\"]" );
                 driver.DeleteElementByXPath( "//*[@id=\"seasonlist_module\"]" );
                 driver.DeleteElementByXPath( "//*[@id=\"bili-header-m\"]" );
-
                 driver.DeleteElementByXPath( "//*[@id=\"internationalHeader\"]" );
+                driver.ConsoleLog( "成功删除头部" );
+
                 driver.DeleteElementByXPath( "//*[@id=\"reco_list\"]" );
 
                 driver.DeleteElementByXPath( "//*[@id=\"slide_ad\"]" );
                 driver.DeleteElementByXPath( "//*[@id=\"right-bottom-banner\"]" );
                 driver.DeleteElementByXPath( "//*[@id=\"live_recommand_report\"]" );
+                driver.ConsoleLog( "冗余信息全部完成删除" );
             } catch ( Exception ) {
                 return;
             }
+        }
+
+        public void CreateLobbyInfo()
+        {
+            driver.RunJS<string>(
+                "var t = document.createElement('div');" +
+                "t.setAttribute('id','vt-lobby-info');" +
+                "t.innerText=\"VT_LOBBY_INFO\";" +
+                "arguments[0].appendChild(t);",
+                "//*[@id=\"app\"]/div/div[2]" );
+        }
+
+        public void UpdateLobbyStatus( List<string> msg )
+        {
+            var table = "";
+            msg.ForEach( a => { table += a + "<br>"; } );
+
+            driver.RunJS<string>(
+                "arguments[0].innerHTML = \"" +
+                table +
+                "\";",
+                "//*[@id=\"vt-lobby-info\"]" );
         }
 
         public void ShowVideoControl()

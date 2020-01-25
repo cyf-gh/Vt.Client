@@ -29,10 +29,10 @@
             this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // textBox1
+            // tb_text
             // 
             this.tb_text.Location = new System.Drawing.Point(12, 12);
-            this.tb_text.Name = "textBox1";
+            this.tb_text.Name = "tb_text";
             this.tb_text.Size = new System.Drawing.Size(373, 25);
             this.tb_text.TabIndex = 0;
             // 
@@ -53,10 +53,11 @@
             this.ClientSize = new System.Drawing.Size(509, 52);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.tb_text);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "InputBox";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "请输入密码";
+            this.Load += new System.EventHandler(this.InputBox_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

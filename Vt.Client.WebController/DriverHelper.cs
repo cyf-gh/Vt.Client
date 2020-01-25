@@ -74,6 +74,11 @@ namespace Vt.Client.WebController {
         {
             return Handle.ExecuteJavaScript<T>( JsCode, FindElementByXPathDoNotWait(elemXPath) );
         }
+
+        public void RunJS( string jsCode )
+        {
+            Handle.ExecuteJavaScript(jsCode);
+        }
         public void SaveLoginCookie( string filePath )
         {
             File.WriteAllText( filePath,
@@ -103,6 +108,14 @@ namespace Vt.Client.WebController {
         public void Max()
         {
             Window.Maximize();
+        }
+
+        /// <summary>
+        /// 输出至浏览器的Log
+        /// </summary>
+        public void ConsoleLog( string logMessage )
+        {
+            Handle.ExecuteJavaScript( string.Format( "console.log(\"{0}\");", logMessage ) );
         }
     }
 }

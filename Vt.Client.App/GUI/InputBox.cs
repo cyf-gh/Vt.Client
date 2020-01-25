@@ -23,7 +23,7 @@ namespace Vt.Client.App.GUI {
 
         private void btn_OK_Click( Object sender, EventArgs e )
         {
-            var rep = TcpClient_.SendMessage_ShortConnect( string.Format( "join_lobby@{0},{1},{2}", lobName, Global.MyName, tb_text.Text ), Global.SelectedServer );
+            var rep = TcpClient_.SendMessage_ShortConnect( string.Format( "join_lobby@{0},{1},{2}", lobName, G.MyName, tb_text.Text ), G.SelectedServer );
             switch ( rep ) {
                 case "PSWD_INCOR":
                     MessageBox.Show( "密码错误" );
@@ -40,9 +40,17 @@ namespace Vt.Client.App.GUI {
                     break;
             }
             var url___cookie = Regex.Split( rep, @"\$_\$", RegexOptions.IgnoreCase );
-            InLobby inLobby = new InLobby( false, lobName, url___cookie[1], url___cookie[0], new LobbyBorrower( Global.SelectedServer, lobName, tb_text.Text ) );
-            inLobby.Show();
+
+            G.Lobby.Start(
+                lobName,
+                url___cookie[1],
+                url___cookie[0] );
             Close();
+        }
+
+        private void InputBox_Load( Object sender, EventArgs e )
+        {
+
         }
     }
 }
