@@ -121,7 +121,7 @@ namespace Vt.Client.App {
 
         private void tb_nick_name_MouseLeave( Object sender, EventArgs e )
         {
-            File.WriteAllText( "./user.cfg", tb_nick_name.Text );
+            File.WriteAllText( "./config/user.cfg", tb_nick_name.Text );
         }
 
         private void lb_lobs_SelectedIndexChanged( Object sender, EventArgs e )

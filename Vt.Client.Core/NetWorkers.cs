@@ -21,6 +21,7 @@ namespace Vt.Client.Core {
             this.nickName = nickName;
             this.browserContoller = browserContoller;
             this.synccer = new UdpClient_();
+
             this.ipport = ipport;
         }
 
@@ -66,7 +67,6 @@ namespace Vt.Client.Core {
                             continue;
                         default:
                             if ( recv.Contains( ":" ) ) {
-
                                 browserContoller.ShowVideoControl();
                                 browserContoller.LocateVideoBasic( recv );
                                 browserContoller.HideVideoControl();

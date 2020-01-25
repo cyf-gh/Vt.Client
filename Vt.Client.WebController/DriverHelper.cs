@@ -72,7 +72,7 @@ namespace Vt.Client.WebController {
         }
         public T RunJS<T>( string JsCode, string elemXPath )
         {
-            return Handle.ExecuteJavaScript<T>( JsCode, FindElementByXPath(elemXPath) );
+            return Handle.ExecuteJavaScript<T>( JsCode, FindElementByXPathDoNotWait(elemXPath) );
         }
         public void SaveLoginCookie( string filePath )
         {
