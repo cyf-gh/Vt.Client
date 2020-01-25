@@ -21,6 +21,7 @@ cd $BIN_DIR
 
 # ./login
 mkdir ./login
+rm -f ./login/bilibili.json
 touch ./login/bilibili.json
 
 #./config

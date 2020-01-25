@@ -8,6 +8,7 @@ using System.IO;
 using stLib.Win32;
 using Vt.Client.WebController;
 using stLib.Log;
+using System.Diagnostics;
 
 namespace Vt.Client.App {
     public partial class MainFrame : Form {
@@ -62,10 +63,15 @@ namespace Vt.Client.App {
         private void MainFrame_FormClosing( Object sender, FormClosingEventArgs e )
         {
             DialogResult result = MessageBox.Show( "是否退出？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Information );
+
+
+            if ( G.Lobby.BC != null ) {
+                G.Lobby.BC.Close();
+            }
             // 关闭房间，清理资源
             // TcpClient_.SendMessage_ShortConnect( "", Global.SelectedServer );
             if ( result == DialogResult.OK ) {
-                Environment.Exit(0);
+                Environment.Exit( 0 );
             } else {
                 e.Cancel = true;
             }
@@ -152,7 +158,7 @@ namespace Vt.Client.App {
                 }
             } );
             if ( ok ) {
-                MessageBox.Show( "OK", G.SelectedServer.Readable());
+                MessageBox.Show( "OK", G.SelectedServer.Readable() );
             }
             Cursor = Cursors.Default;
         }
@@ -173,9 +179,10 @@ namespace Vt.Client.App {
                 }
             }
             try {
+                G.Lobby.BC = new BrowserContoller( "", "" );
                 G.Lobby.BC.TryLogin();
             } catch ( Exception ex ) {
-                stLogger.Log("",ex);
+                stLogger.Log( "", ex );
             }
             G.Lobby.BC.Close();
             freshLoginStatus();
@@ -195,7 +202,12 @@ namespace Vt.Client.App {
 
         private void version_btn_Click( Object sender, EventArgs e )
         {
-            MessageBox.Show("0.0.1b2","版本");
+            MessageBox.Show( "0.0.1b2", "版本" );
+        }
+
+        private void MainFrame_FormClosed( Object sender, FormClosedEventArgs e )
+        {
+            DriverHelper.KillChromeDriver();
         }
     }
 }

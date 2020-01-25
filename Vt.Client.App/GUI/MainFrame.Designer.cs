@@ -204,6 +204,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Vt";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFrame_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainFrame_FormClosed);
             this.Load += new System.EventHandler(this.MainFrame_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

@@ -32,6 +32,7 @@ namespace Vt.Client.WebController {
             var driverService = ChromeDriverService.CreateDefaultService( webdriverLocation );
             driverService.HideCommandPromptWindow = true;
             var ops = new ChromeOptions();
+            ops.AddArguments( "--test-type", "--no-first-run" );
             if ( !string.IsNullOrEmpty( chromeBinaryLocation ) ) {
                 ops.BinaryLocation = chromeBinaryLocation;
             }
@@ -72,12 +73,12 @@ namespace Vt.Client.WebController {
         }
         public T RunJS<T>( string JsCode, string elemXPath )
         {
-            return Handle.ExecuteJavaScript<T>( JsCode, FindElementByXPathDoNotWait(elemXPath) );
+            return Handle.ExecuteJavaScript<T>( JsCode, FindElementByXPathDoNotWait( elemXPath ) );
         }
 
         public void RunJS( string jsCode )
         {
-            Handle.ExecuteJavaScript(jsCode);
+            Handle.ExecuteJavaScript( jsCode );
         }
         public void SaveLoginCookie( string filePath )
         {
@@ -116,6 +117,11 @@ namespace Vt.Client.WebController {
         public void ConsoleLog( string logMessage )
         {
             Handle.ExecuteJavaScript( string.Format( "console.log(\"{0}\");", logMessage ) );
+        }
+
+        public static void KillChromeDriver()
+        {
+            System.Diagnostics.Process.Start( "CMD.exe", "taskkill /f /im chromedriver.exe" );
         }
     }
 }
