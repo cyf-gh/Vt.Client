@@ -56,7 +56,6 @@ namespace Vt.Client.App {
         public void Exit()
         {
             SW.Stop();
-            BC.Close();
             if ( isHost ) {
                 LB.Return();
             } else {

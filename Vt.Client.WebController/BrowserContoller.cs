@@ -48,7 +48,16 @@ namespace Vt.Client.WebController {
 
         public BrowserContoller( string videoUrl, string cookie, string webdriverLocation = "./external/webdriver", string chromeBinaryLocation = null )
         {
-            driver = new DriverHelper( webdriverLocation, chromeBinaryLocation );
+            switch ( DriverHelper.Browser ) {
+                case "chrome":
+                    driver = new DriverHelper( webdriverLocation, chromeBinaryLocation );
+                    break;
+                case "edge":
+                    driver = new DriverHelper();
+                    break;
+                default:
+                    break;
+            }
             Hide();
             VideoUrl = videoUrl;
             this.genre = GetVideoGenre();
@@ -70,12 +79,14 @@ namespace Vt.Client.WebController {
 
         public void Hide()
         {
-            driver.Window.Position = new System.Drawing.Point( -10000, 0 );
+            driver.Window.Position = new System.Drawing.Point( 10000, 0 );
+            driver.Hide();
         }
 
         public void BringToScreen()
         {
             driver.Window.Position = new System.Drawing.Point( 0, 0 );
+            driver.Max();
         }
 
         bool FeedCookieString( string cookie )

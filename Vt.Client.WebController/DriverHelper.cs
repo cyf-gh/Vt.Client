@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Edge;
 using stLib.Log;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Vt.Client.WebController;
+using stLib.Win32;
 
 namespace Vt.Client.WebController {
     public static class BrowserSettings {
@@ -24,6 +26,7 @@ namespace Vt.Client.WebController {
     /// 封装一系列Selenium操作
     /// </summary>
     public class DriverHelper {
+        public static string Browser { get; set; }
         public IWebDriver Handle { get; set; }
         public IWindow Window { get; set; }
         WebDriverWait wait;
@@ -32,6 +35,7 @@ namespace Vt.Client.WebController {
             var driverService = ChromeDriverService.CreateDefaultService( webdriverLocation );
             driverService.HideCommandPromptWindow = true;
             var ops = new ChromeOptions();
+            ops.Proxy = null;
             ops.AddArguments( "--test-type", "--no-first-run" );
             if ( !string.IsNullOrEmpty( chromeBinaryLocation ) ) {
                 ops.BinaryLocation = chromeBinaryLocation;
@@ -41,6 +45,18 @@ namespace Vt.Client.WebController {
             Window = Handle.Manage().Window;
             wait = new WebDriverWait( Handle, new TimeSpan( 0, 0, BrowserSettings.TimeOut ) );
         }
+
+        public DriverHelper()
+        {
+            var s = EdgeDriverService.CreateDefaultService();
+            var ops = new EdgeOptions();
+            ops.Proxy = null;
+            s.HideCommandPromptWindow = true;
+            Handle = new EdgeDriver( s, ops );
+            Window = Handle.Manage().Window;
+            wait = new WebDriverWait( Handle, new TimeSpan( 0, 0, BrowserSettings.TimeOut ) );
+        }
+
         public IWebElement FindElementByXPath( string xpath )
         {
             return wait.Until( c => { return Handle.FindElement( By.XPath( xpath ) ); } );
@@ -121,7 +137,7 @@ namespace Vt.Client.WebController {
 
         public static void KillChromeDriver()
         {
-            System.Diagnostics.Process.Start( "CMD.exe", "taskkill /f /im chromedriver.exe" );
+            Command.PS( "taskkill /f /im chromedriver.exe" );
         }
     }
 }

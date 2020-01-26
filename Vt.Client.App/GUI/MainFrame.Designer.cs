@@ -36,11 +36,17 @@
             this.TestCurrentServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.version_btn = new System.Windows.Forms.ToolStripMenuItem();
+            this.brwToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.edgeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chromeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LocalChromeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NoLocalChromeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tb_nick_name = new System.Windows.Forms.TextBox();
             this.lb_lobs = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btn_refresh = new System.Windows.Forms.Button();
-            this.version_btn = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,6 +55,7 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
+            this.brwToolStripMenuItem,
             this.登录ToolStripMenuItem,
             this.serversToolStripMenuItem,
             this.refreshToolStripMenuItem,
@@ -56,7 +63,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(716, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(741, 28);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip";
             // 
@@ -71,7 +78,7 @@
             // createLobbyToolStripMenuItem
             // 
             this.createLobbyToolStripMenuItem.Name = "createLobbyToolStripMenuItem";
-            this.createLobbyToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.createLobbyToolStripMenuItem.Size = new System.Drawing.Size(122, 26);
             this.createLobbyToolStripMenuItem.Text = "房间";
             this.createLobbyToolStripMenuItem.Click += new System.EventHandler(this.createLobbyToolStripMenuItem_Click);
             // 
@@ -126,7 +133,6 @@
             // 
             this.refreshToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.updateToolStripMenuItem});
-            this.refreshToolStripMenuItem.Enabled = false;
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
             this.refreshToolStripMenuItem.Size = new System.Drawing.Size(53, 24);
             this.refreshToolStripMenuItem.Text = "关于";
@@ -134,15 +140,70 @@
             // updateToolStripMenuItem
             // 
             this.updateToolStripMenuItem.Name = "updateToolStripMenuItem";
-            this.updateToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
+            this.updateToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.updateToolStripMenuItem.Text = "软件更新";
+            this.updateToolStripMenuItem.Click += new System.EventHandler(this.updateToolStripMenuItem_Click);
+            // 
+            // version_btn
+            // 
+            this.version_btn.Name = "version_btn";
+            this.version_btn.Size = new System.Drawing.Size(53, 24);
+            this.version_btn.Text = "版本";
+            this.version_btn.Click += new System.EventHandler(this.version_btn_Click);
+            // 
+            // brwToolStripMenuItem
+            // 
+            this.brwToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectBrowserToolStripMenuItem});
+            this.brwToolStripMenuItem.Name = "brwToolStripMenuItem";
+            this.brwToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
+            this.brwToolStripMenuItem.Text = "快速配置⚠";
+            // 
+            // selectBrowserToolStripMenuItem
+            // 
+            this.selectBrowserToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.edgeToolStripMenuItem,
+            this.chromeToolStripMenuItem});
+            this.selectBrowserToolStripMenuItem.Name = "selectBrowserToolStripMenuItem";
+            this.selectBrowserToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.selectBrowserToolStripMenuItem.Text = "选择浏览器";
+            // 
+            // edgeToolStripMenuItem
+            // 
+            this.edgeToolStripMenuItem.Name = "edgeToolStripMenuItem";
+            this.edgeToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.edgeToolStripMenuItem.Text = "Edge";
+            this.edgeToolStripMenuItem.Click += new System.EventHandler(this.edgeToolStripMenuItem_Click);
+            // 
+            // chromeToolStripMenuItem
+            // 
+            this.chromeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.LocalChromeToolStripMenuItem,
+            this.NoLocalChromeToolStripMenuItem});
+            this.chromeToolStripMenuItem.Name = "chromeToolStripMenuItem";
+            this.chromeToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.chromeToolStripMenuItem.Text = "Chrome";
+            // 
+            // LocalChromeToolStripMenuItem
+            // 
+            this.LocalChromeToolStripMenuItem.Name = "LocalChromeToolStripMenuItem";
+            this.LocalChromeToolStripMenuItem.Size = new System.Drawing.Size(270, 26);
+            this.LocalChromeToolStripMenuItem.Text = "我电脑上安装了Chrome";
+            this.LocalChromeToolStripMenuItem.Click += new System.EventHandler(this.LocalChromeToolStripMenuItem_Click);
+            // 
+            // NoLocalChromeToolStripMenuItem
+            // 
+            this.NoLocalChromeToolStripMenuItem.Name = "NoLocalChromeToolStripMenuItem";
+            this.NoLocalChromeToolStripMenuItem.Size = new System.Drawing.Size(270, 26);
+            this.NoLocalChromeToolStripMenuItem.Text = "我电脑上没有安装Chrome";
+            this.NoLocalChromeToolStripMenuItem.Click += new System.EventHandler(this.NoLocalChromeToolStripMenuItem_Click);
             // 
             // tb_nick_name
             // 
-            this.tb_nick_name.Location = new System.Drawing.Point(471, 4);
+            this.tb_nick_name.Location = new System.Drawing.Point(553, 3);
             this.tb_nick_name.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tb_nick_name.Name = "tb_nick_name";
-            this.tb_nick_name.Size = new System.Drawing.Size(228, 25);
+            this.tb_nick_name.Size = new System.Drawing.Size(176, 25);
             this.tb_nick_name.TabIndex = 2;
             this.tb_nick_name.TextChanged += new System.EventHandler(this.tb_nickname_TextChange);
             this.tb_nick_name.MouseLeave += new System.EventHandler(this.tb_nick_name_MouseLeave);
@@ -154,9 +215,9 @@
             this.lb_lobs.ForeColor = System.Drawing.Color.Black;
             this.lb_lobs.FormattingEnabled = true;
             this.lb_lobs.ItemHeight = 20;
-            this.lb_lobs.Location = new System.Drawing.Point(12, 37);
+            this.lb_lobs.Location = new System.Drawing.Point(12, 31);
             this.lb_lobs.Name = "lb_lobs";
-            this.lb_lobs.Size = new System.Drawing.Size(688, 304);
+            this.lb_lobs.Size = new System.Drawing.Size(717, 524);
             this.lb_lobs.TabIndex = 4;
             this.lb_lobs.SelectedIndexChanged += new System.EventHandler(this.lb_lobs_SelectedIndexChanged);
             this.lb_lobs.DoubleClick += new System.EventHandler(this.lb_lobs_DoubleClick);
@@ -164,7 +225,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(429, 7);
+            this.label1.Location = new System.Drawing.Point(510, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(37, 15);
             this.label1.TabIndex = 5;
@@ -172,7 +233,7 @@
             // 
             // btn_refresh
             // 
-            this.btn_refresh.Location = new System.Drawing.Point(12, 347);
+            this.btn_refresh.Location = new System.Drawing.Point(12, 561);
             this.btn_refresh.Name = "btn_refresh";
             this.btn_refresh.Size = new System.Drawing.Size(130, 33);
             this.btn_refresh.TabIndex = 6;
@@ -180,26 +241,20 @@
             this.btn_refresh.UseVisualStyleBackColor = true;
             this.btn_refresh.Click += new System.EventHandler(this.btn_refresh_Click);
             // 
-            // version_btn
-            // 
-            this.version_btn.Name = "version_btn";
-            this.version_btn.Size = new System.Drawing.Size(53, 24);
-            this.version_btn.Text = "版本";
-            this.version_btn.Click += new System.EventHandler(this.version_btn_Click);
-            // 
             // MainFrame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(716, 392);
+            this.ClientSize = new System.Drawing.Size(741, 607);
             this.Controls.Add(this.btn_refresh);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lb_lobs);
             this.Controls.Add(this.tb_nick_name);
             this.Controls.Add(this.menuStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MaximizeBox = false;
             this.Name = "MainFrame";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Vt";
@@ -230,6 +285,12 @@
         private System.Windows.Forms.ToolStripMenuItem BiliBiliToolStrip;
         private System.Windows.Forms.ToolStripMenuItem ClearLoginStatusToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem version_btn;
+        private System.Windows.Forms.ToolStripMenuItem brwToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectBrowserToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem edgeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem chromeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem LocalChromeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem NoLocalChromeToolStripMenuItem;
     }
 }
 

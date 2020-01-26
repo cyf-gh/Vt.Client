@@ -9,6 +9,10 @@ using stLib.Win32;
 using Vt.Client.WebController;
 using stLib.Log;
 using System.Diagnostics;
+using System.Management.Automation;
+using Microsoft.Dism;
+using System.Net;
+using System.Text;
 
 namespace Vt.Client.App {
     public partial class MainFrame : Form {
@@ -19,7 +23,7 @@ namespace Vt.Client.App {
 
         void freshServerStatus()
         {
-            Text = "服务器信息：" + G.SelectedServer?.Readable();
+            Text = "浏览器：" + DriverHelper.Browser + "    服务器信息：" + G.SelectedServer?.Readable();
         }
 
         private async void MainFrame_Load( Object sender, EventArgs e )
@@ -64,14 +68,12 @@ namespace Vt.Client.App {
         {
             DialogResult result = MessageBox.Show( "是否退出？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Information );
 
-
-            if ( G.Lobby.BC != null ) {
-                G.Lobby.BC.Close();
-            }
             // 关闭房间，清理资源
             // TcpClient_.SendMessage_ShortConnect( "", Global.SelectedServer );
             if ( result == DialogResult.OK ) {
-                Environment.Exit( 0 );
+                G.SaveConfig();
+                // DriverHelper.KillChromeDriver();
+                // Environment.Exit( 0 );
             } else {
                 e.Cancel = true;
             }
@@ -202,12 +204,103 @@ namespace Vt.Client.App {
 
         private void version_btn_Click( Object sender, EventArgs e )
         {
-            MessageBox.Show( "0.0.1b2", "版本" );
+            MessageBox.Show( "0.0.1b3", "版本" );
         }
 
         private void MainFrame_FormClosed( Object sender, FormClosedEventArgs e )
         {
             DriverHelper.KillChromeDriver();
+            Environment.Exit( 0 );
+        }
+
+        private void edgeToolStripMenuItem_Click( Object sender, EventArgs e )
+        {
+            string capName = "Microsoft.WebDriver~~~~0.0.1.0";
+            try {
+                DismApi.Initialize( DismLogLevel.LogErrors );
+                using ( DismSession session = DismApi.OpenOnlineSession() ) {
+                    foreach ( DismCapability feature in DismApi.GetCapabilities( session ) ) {
+                        Console.WriteLine( feature.Name );
+                        if ( feature.Name == capName ) {
+                            if ( feature.State != DismPackageFeatureState.Installed ) {
+                                MessageBox.Show( "检测到Microsoft.WebDriver功能未添加\n即将开始下载，这可能需要几分钟。" );
+                                DismApi.AddCapability( session, capName );
+                            } else {
+                                MessageBox.Show( "检测到Microsoft.WebDriver功能已经添加" );
+                            }
+                        }
+                    }
+                }
+                DismApi.Shutdown();
+            } catch ( Exception ex ) {
+                MessageBox.Show( "可能需要使用管理员权限启动\n" + ex.Message );
+                throw;
+            }
+            DriverHelper.Browser = "edge";
+            freshServerStatus();
+        }
+
+        private void LocalChromeToolStripMenuItem_Click( Object sender, EventArgs e )
+        {
+            DriverHelper.Browser = "chrome";
+            G.ChromeBinPath = "";
+            freshServerStatus();
+        }
+
+        private void NoLocalChromeToolStripMenuItem_Click( Object sender, EventArgs e )
+        {
+            DriverHelper.Browser = "chrome";
+            if ( File.Exists( "./external/Chrome/chrome.exe" ) ) {
+                G.ChromeBinPath = "./external/Chrome/chrome.exe";
+            } else {
+                MessageBox.Show( "./external/Chrome/chrome.exe\n" + "未寻找到chrome\n" + "建议下载chrome或切换至edge浏览器" );
+            }
+            freshServerStatus();
+        }
+
+        private void updateToolStripMenuItem_Click( Object sender, EventArgs e )
+        {
+            int ver = 0;
+            try {
+                ver = System.Convert.ToInt32( fetchRawFromHttp( "https://gitee.com/cyf-my/vt.update/raw/master/Version.txt" ) );
+            } catch ( Exception ex ) {
+                MessageBox.Show( ex.Message );
+            }
+            if ( ver > G.Version ) {
+                MessageBox.Show( "New version is founded. Click to start update." );
+                DialogResult result = MessageBox.Show( "Are you sure to update?", "Update", MessageBoxButtons.YesNo, MessageBoxIcon.Question );
+                if ( result == DialogResult.Yes ) {
+                    Process.Start( "ppUpdator.App.exe" );
+                    Application.Exit();
+                }
+            } else {
+                MessageBox.Show( "已是最新版本" );
+            }
+        }
+
+        private string fetchRawFromHttp( string urlAddress )
+        {
+            string data = "";
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create( urlAddress );
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            if ( response.StatusCode == HttpStatusCode.OK ) {
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+
+                if ( response.CharacterSet == null ) {
+                    readStream = new StreamReader( receiveStream );
+                } else {
+                    readStream = new StreamReader( receiveStream, Encoding.GetEncoding( response.CharacterSet ) );
+                }
+
+                data = readStream.ReadToEnd();
+
+                response.Close();
+                readStream.Close();
+            }
+            return data;
         }
     }
 }

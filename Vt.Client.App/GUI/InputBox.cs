@@ -33,9 +33,7 @@ namespace Vt.Client.App.GUI {
                     Close();
                     return;
                 case "ALREADY_IN_LOBBY":
-                    MessageBox.Show( "您已在房间中" );
-                    Close();
-                    return;
+                    break; // 在房间中仍可进房间 20/1/26
                 default:
                     break;
             }

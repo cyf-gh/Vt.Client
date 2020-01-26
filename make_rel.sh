@@ -1,4 +1,4 @@
-VERSION='v0.0.1b2'
+VERSION='v0.0.1b3'
 BIN_DIR='./.rel/'$VERSION
 BIN_DIR_WITH_CHROME='./.rel/'$VERSION'-with-chrome'
 REL_DIR='./Vt.Client.App/bin/Release'

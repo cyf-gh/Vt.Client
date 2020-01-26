@@ -32,14 +32,10 @@ namespace Vt.Client.App {
         [STAThread]
         static void Main()
         {
-            var parser = new FileIniDataParser();
-            IniData data = parser.ReadFile( "./config/app.cfg" );
-
-            G.IsDebugMod = data["dev"]["mode"] == "debug";
-            G.ChromeBinPath = data["web"]["chrome_bin"] == "def" ? "" : data["web"]["chrome_bin"];
-            G.WebdriverDir = data["web"]["webdriver_dir"];
-
+            G.LoadConfig();
+            Command.Init();
             stLogger.Init();
+
             try {
                 LoadServerInfo();
                 LoadUserInfo();
